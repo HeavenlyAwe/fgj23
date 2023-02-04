@@ -2,16 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Blobs : MonoBehaviour
+public class BlobSim : MonoBehaviour
 {
     private List<GameObject> blobs = new List<GameObject>();
     public GameObject BlobNode;
     // Start is called before the first frame update
     void Start()
     {
-        Debug.Log("Foo");
-        Blob a = new Blob("Bar");
-
         for (int i = 0; i < 20; i++) {
             GameObject newBlob = Instantiate(BlobNode, BlobNode.transform.position, Quaternion.identity);
             newBlob.transform.Translate(
