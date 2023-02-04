@@ -131,8 +131,8 @@ public partial class Main : MonoBehaviour
                 MergeTwoNodes(node1, node2);
                 Destroy(hitColliders[0].gameObject);
             }
+            selectedGo.GetComponent<Blob>().node.selected = false;
         }
-        selectedGo.GetComponent<Blob>().node.selected = false;
         StopDragging();
     }
 
