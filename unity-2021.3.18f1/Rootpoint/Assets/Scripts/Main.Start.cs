@@ -1,12 +1,9 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.Controls;
-using UnityEngine.InputSystem.EnhancedTouch;
-using static UnityEditor.FilePathAttribute;
 using GraphTools;
+
 public partial class Main : MonoBehaviour
 {
     Dictionary<int, int> squareRootMap = new Dictionary<int, int>();
@@ -37,12 +34,10 @@ public partial class Main : MonoBehaviour
 
     void Start()
     {
-
+        // Init node graph
         graph = new Graph(new Node(10));
 
-        //graph.SuperDivide(graph.root, 3);
-        //graph.SuperDivide(graph.root.children[0], 2);
-
+        // Define walls around nodes bounce off of
         var leftPos = mainCamera.ScreenToWorldPoint(Vector3.zero);
         var rightPos = mainCamera.ScreenToWorldPoint(new Vector3(Screen.width, 0.0f, 0.0f));
         var topPos = mainCamera.ScreenToWorldPoint(new Vector3(0.0f, Screen.height, 0.0f));
@@ -50,27 +45,11 @@ public partial class Main : MonoBehaviour
         wallRight.transform.position = new Vector3(rightPos.x, 0.0f, 0.0f);
         wallTop.transform.position = new Vector3(0.0f, topPos.y, 0.0f);
 
-        graph.TraverseGraph((node) =>
-        {
-            var go = Instantiate(Resources.Load<GameObject>("Metaball"), new Vector3 (0.0f, 8.0f, 0.0f), Quaternion.identity);
-            node.gameObject = go;
-            go.transform.GetChild(0).GetComponent<TextMesh>().text = node.value.ToString();
-            go.GetComponent<Blob>().node = node;
-            node.position = go.transform.position;
-
-            // Set simulation position based on node data (skip root)
-            if (node.parents.Length != 0)
-            {
-                go.transform.position = node.position;
-            }
-
-            // Update positions for all childs of this node in data
-            for (int i = 0; i < node.children.Length; i++)
-            {
-                if (node.children[i] == null) continue;
-
-                node.children[i].position = go.transform.position + new Vector3(i, -1, 0);
-            }
-        });
+        // Init root node game object
+        var go = Instantiate(Resources.Load<GameObject>("Metaball"), new Vector3(0.0f, 8.0f, 0.0f), Quaternion.identity);
+        go.transform.GetChild(0).GetComponent<TextMesh>().text = graph.root.value.ToString();
+        go.GetComponent<Blob>().node = graph.root;
+        graph.root.gameObject = go;
+        graph.root.position = go.transform.position;
     }
 }
