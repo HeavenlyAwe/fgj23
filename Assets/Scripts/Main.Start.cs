@@ -20,6 +20,8 @@ public partial class Main : MonoBehaviour
 
         touchPressAction = playerInput.actions["TouchPress"];
         touchPositionAction = playerInput.actions["TouchPosition"];
+
+        mousePressAction = playerInput.actions["MousePress"];
     }
 
     void Start()

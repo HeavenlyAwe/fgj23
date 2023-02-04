@@ -25,6 +25,8 @@ public partial class Main : MonoBehaviour
     InputAction touchPressAction;
     InputAction touchPositionAction;
 
+    InputAction mousePressAction;
+
     public bool isPressed, isDragging;
     public GameObject selectedGo = null;
     public Vector3 selectedGoPos = Vector3.zero;
@@ -41,22 +43,31 @@ public partial class Main : MonoBehaviour
 
     private void OnEnable()
     {
-        TouchSimulation.Enable();
+        //TouchSimulation.Enable();
 
         touchPositionAction.performed += TouchPositionPerformed;
 
         touchPressAction.started += TouchPressedStarted;
         touchPressAction.canceled += TouchPressedCanceled;
+
+
+        mousePressAction.started += TouchPressedStarted;
+        mousePressAction.canceled += TouchPressedCanceled;
     }
 
     private void OnDisable()
     {
-        TouchSimulation.Disable();
+        //TouchSimulation.Disable();
 
         touchPositionAction.performed -= TouchPositionPerformed;
 
         touchPressAction.started -= TouchPressedStarted;
         touchPressAction.canceled -= TouchPressedCanceled;
+
+
+
+        mousePressAction.started -= TouchPressedStarted;
+        mousePressAction.canceled -= TouchPressedCanceled;
     }
 
     private void TouchPositionPerformed(InputAction.CallbackContext context)
