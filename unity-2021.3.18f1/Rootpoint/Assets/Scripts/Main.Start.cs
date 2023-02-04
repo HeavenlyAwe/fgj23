@@ -34,11 +34,11 @@ public partial class Main : MonoBehaviour
 
         graph.TraverseGraph((node) =>
         {
-            var go = Instantiate(Resources.Load<GameObject>("Metaball"));
+            var go = Instantiate(Resources.Load<GameObject>("Metaball"), new Vector3 (0.0f, 8.0f, 0.0f), Quaternion.identity);
             node.gameObject = go;
             go.transform.GetChild(0).GetComponent<TextMesh>().text = node.value.ToString();
-
             go.GetComponent<Blob>().node = node;
+            node.position = go.transform.position;
 
             // Set simulation position based on node data (skip root)
             if (node.parents.Length != 0)

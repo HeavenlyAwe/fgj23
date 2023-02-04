@@ -30,7 +30,7 @@ public partial class Main : MonoBehaviour
     {
         graph.TraverseGraph((node) =>
         {
-            if (node.gameObject == null) return;
+            if (node.gameObject == null || node.Equals(graph.root)) return;
 
             GameObject blob = node.gameObject;
             SphereCollider thisCollider = blob.GetComponent<SphereCollider>();
@@ -68,6 +68,10 @@ public partial class Main : MonoBehaviour
             blob.transform.Translate(velocity * Time.deltaTime);
             blob.GetComponent<Blob>().velocity = velocity;
             blob.GetComponent<Blob>().magnitude = Mathf.Round(velocity.magnitude * 100);
+
+            node.position = blob.transform.position;
+            var lineRenderer = blob.GetComponent<LineRenderer>();
+            lineRenderer.SetPositions(new[] { blob.transform.position, node.parents[0].position });
         });
     }
 
@@ -105,8 +109,13 @@ public partial class Main : MonoBehaviour
                             }
                             go.GetComponent<Blob>().node = node;
                             go.transform.GetChild(0).GetComponent<TextMesh>().text = node.value.ToString();
+
+                            var lineRenderer = go.GetComponent<LineRenderer>();
+
                             node.position = go.transform.position;
                             node.gameObject = go;
+
+                            lineRenderer.SetPositions(new[] { node.position, node.parents[0].position });
                         }
                     });
                     previouslySelectedGo.layer = LayerMask.NameToLayer("Ignore Raycast");
