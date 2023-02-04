@@ -1,5 +1,5 @@
 {
-    "name": "Player",
+    "name": "PlayerInputActions",
     "maps": [
         {
             "name": "Touch",
@@ -44,34 +44,6 @@
                     "processors": "",
                     "groups": "",
                     "action": "TouchPress",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                }
-            ]
-        },
-        {
-            "name": "Player",
-            "id": "ff19d9bf-13ba-4b9d-9775-31010de61bbc",
-            "actions": [
-                {
-                    "name": "New action",
-                    "type": "Button",
-                    "id": "f0477207-94c2-42b9-ae22-74e0e4ecd73d",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                }
-            ],
-            "bindings": [
-                {
-                    "name": "",
-                    "id": "9c07bf1c-b8e7-4612-b4ee-e265bcdf214c",
-                    "path": "",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "New action",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
