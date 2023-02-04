@@ -41,6 +41,7 @@ public partial class Main : MonoBehaviour
         var leftPos = mainCamera.ScreenToWorldPoint(Vector3.zero);
         var rightPos = mainCamera.ScreenToWorldPoint(new Vector3(Screen.width, 0.0f, 0.0f));
         var topPos = mainCamera.ScreenToWorldPoint(new Vector3(0.0f, Screen.height, 0.0f));
+
         wallLeft.transform.position = new Vector3(leftPos.x, 0.0f, 0.0f);
         wallRight.transform.position = new Vector3(rightPos.x, 0.0f, 0.0f);
         wallTop.transform.position = new Vector3(0.0f, topPos.y, 0.0f);

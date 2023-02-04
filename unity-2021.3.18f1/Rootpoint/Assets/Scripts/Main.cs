@@ -25,7 +25,8 @@ public partial class Main : MonoBehaviour
     [Header("Informative Values")]
     public bool isPressed;
     public bool isDragging;
-    
+    public bool isScrolling = false;
+
     public GameObject selectedGo = null;
     public GameObject previouslySelectedGo = null;
 
@@ -51,6 +52,8 @@ public partial class Main : MonoBehaviour
     public Transform wallLeft;
     public Transform wallRight;
     public Transform wallTop;
+
+    public float maxScrollDistance = 40;
 
     private void OnEnable()
     {
@@ -84,10 +87,21 @@ public partial class Main : MonoBehaviour
     private void TouchPositionPerformed(InputAction.CallbackContext context)
     {
         touchPosition = context.ReadValue<Vector2>();
-        var oldIsDragging = isDragging;
-        isDragging = ( (Vector2.Distance(touchPosition, originalTouchPosition) > 20.0f && selectedGo != null) || isDragging);
-        if (!oldIsDragging && isDragging) StartDragging();
+
+        if (isScrolling)
+        {
+            Vector3 scrollTarget = mainCamera.ScreenToWorldPoint(new Vector3(touchPosition.x, touchPosition.y, 10.0f));
+            Vector3 scrollDelta = new Vector3(0, scrollStart.y - scrollTarget.y, 0);
+            mainCamera.transform.Translate(scrollDelta);
+            mainCamera.transform.position = new Vector3(0, Mathf.Clamp(mainCamera.transform.position.y, -maxScrollDistance, 1), -10);
+        } else
+        {
+            var oldIsDragging = isDragging;
+            isDragging = ((Vector2.Distance(touchPosition, originalTouchPosition) > 20.0f && selectedGo != null) || isDragging);
+            if (!oldIsDragging && isDragging) StartDragging();
+        }
     }
+
 
     private void TouchPressedStarted(InputAction.CallbackContext context)
     {
@@ -116,11 +130,19 @@ public partial class Main : MonoBehaviour
             tapTimer = 0.0f;
             tapTimerDone = false;
         }
+        else if (Physics.Raycast(ray, out hit, 300.0f, LayerMask.GetMask("DraggingPlane")))
+        {
+            isScrolling = true;
+            scrollStart = hit.point;
+        }
     }
+
+    Vector3 scrollStart = Vector3.zero;
 
     private void TouchPressedCanceled(InputAction.CallbackContext context)
     {
         isPressed = false;
+        isScrolling = false;
         var resultLayer = "Draggable";
         if (isDragging && selectedGo != null)
         {
