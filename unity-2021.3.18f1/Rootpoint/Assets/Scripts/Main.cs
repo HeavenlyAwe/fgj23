@@ -44,6 +44,10 @@ public partial class Main : MonoBehaviour
     float tapTimer;
     public int tapCount = 0;
 
+    public Transform wallLeft;
+    public Transform wallRight;
+    public Transform wallTop;
+
     private void OnEnable()
     {
         //TouchSimulation.Enable();

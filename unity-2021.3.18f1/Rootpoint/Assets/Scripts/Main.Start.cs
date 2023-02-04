@@ -32,6 +32,13 @@ public partial class Main : MonoBehaviour
         //graph.SuperDivide(graph.root, 3);
         //graph.SuperDivide(graph.root.children[0], 2);
 
+        var leftPos = mainCamera.ScreenToWorldPoint(Vector3.zero);
+        var rightPos = mainCamera.ScreenToWorldPoint(new Vector3(Screen.width, 0.0f, 0.0f));
+        var topPos = mainCamera.ScreenToWorldPoint(new Vector3(0.0f, Screen.height, 0.0f));
+        wallLeft.transform.position = new Vector3(leftPos.x, 0.0f, 0.0f);
+        wallRight.transform.position = new Vector3(rightPos.x, 0.0f, 0.0f);
+        wallTop.transform.position = new Vector3(0.0f, topPos.y, 0.0f);
+
         graph.TraverseGraph((node) =>
         {
             var go = Instantiate(Resources.Load<GameObject>("Metaball"), new Vector3 (0.0f, 8.0f, 0.0f), Quaternion.identity);
