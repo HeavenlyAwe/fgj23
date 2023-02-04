@@ -136,7 +136,7 @@ public class Main : MonoBehaviour
             {
                 if (selectedGameObject != null)
                 {
-                    selectedGameObject.transform.position = new Vector3(hit.point.x, 0.0f, hit.point.z);
+                    selectedGameObject.transform.position = new Vector3(hit.point.x, hit.point.y, 0.0f);
                 }
             }
         }
@@ -144,13 +144,21 @@ public class Main : MonoBehaviour
         // Look for targets when dropping
         if (!isPressed && selectedGameObject != null)
         {
-            var ray = mainCamera.ScreenPointToRay(touchPosition);
-            RaycastHit hit;
-            //Debug.DrawRay(mainCamera.transform.position, 100.0f * ray.direction, Color.black);
-            if (Physics.Raycast(ray, out hit, 300.0f, LayerMask.GetMask("Draggable")))
+            SphereCollider thisCollider = selectedGameObject.GetComponent<SphereCollider>();
+            Collider[] hitColliders = Physics.OverlapSphere(thisCollider.transform.position, thisCollider.radius, LayerMask.GetMask("Draggable"));
+            if (hitColliders.Length > 0)
             {
-                Destroy(hit.transform.gameObject);
+                Destroy(hitColliders[0].gameObject);
             }
+
+            
+            //var ray = mainCamera.ScreenPointToRay(touchPosition);
+            //RaycastHit hit;
+            ////Debug.DrawRay(mainCamera.transform.position, 100.0f * ray.direction, Color.black);
+            //if (Physics.Raycast(ray, out hit, 300.0f, LayerMask.GetMask("Draggable")))
+            //{
+            //    Destroy(hit.transform.gameObject);
+            //}
 
             UnSelectDraggable();
         }
