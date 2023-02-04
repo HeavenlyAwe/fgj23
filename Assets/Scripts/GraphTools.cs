@@ -11,13 +11,20 @@ namespace GraphTools
         public Node[] parents = new Node[2];
         public Node[] children = new Node[5];
         public int childCount = 0;
+        public int depth = -1;
+        public Vector3 position = Vector3.zero;
 
         public Node(int value, Node parent = null)
         {
             this.value = value;
             parents[0] = parent;
             ID = nodeCount++;
-            if (parent != null) parent.childCount++;
+            if (parent != null)
+            {
+                depth = parent.depth + 1;
+                parent.childCount++;
+            }
+            else depth = 0;
         }
 
         public Node(int value, Node[] parents)
@@ -64,7 +71,7 @@ namespace GraphTools
         public void DebugNodes()
         {
             checkedNodes = new int[Node.nodeCount];
-            TraverseGraph(root, (node) =>
+            TraverseGraph((node) =>
             {
                 var childString = "";
                 foreach (var child in node.children)
@@ -75,16 +82,22 @@ namespace GraphTools
             });
         }
 
-        public void TraverseGraph(Node root, Action<Node> callback) 
+        public void TraverseGraph(Action<Node> callback)
+        {
+            checkedNodes = new int[Node.nodeCount];
+            DFS(root, callback);
+        }
+
+        public void DFS(Node root, Action<Node> callback) 
         {
             checkedNodes[root.ID] = 1;
             callback?.Invoke(root);
             foreach (var child in root.children)
             {
                 if (child == null) continue;
-                if (checkedNodes[child.ID] == 0 && child.childCount > 0)
+                if (checkedNodes[child.ID] == 0)
                 {
-                    TraverseGraph(child, callback);
+                    DFS(child, callback);
                 } 
             }
         }
