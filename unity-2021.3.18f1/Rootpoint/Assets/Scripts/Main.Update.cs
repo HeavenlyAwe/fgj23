@@ -102,7 +102,12 @@ public partial class Main : MonoBehaviour
                     {
                         if (!startNode.Equals(node))
                         {
-                            var go = Instantiate(nodeGo, previouslySelectedGo.transform.position + new Vector3(i++, -1, 0), Quaternion.identity);
+                            var clampMin = wallLeft.transform.position.x + 0.1f;
+                            var clampMax = wallRight.transform.position.x - 0.1f;
+                            var spawnPos = previouslySelectedGo.transform.position + new Vector3(i++, -1, 0);
+                            spawnPos = new Vector3(Mathf.Clamp(spawnPos.x, clampMin, clampMax), spawnPos.y, spawnPos.z);
+
+                            var go = Instantiate(nodeGo, spawnPos, Quaternion.identity);
                             if (node.value == 1)
                             {
                                 go.layer = LayerMask.NameToLayer("Ignore Raycast");
