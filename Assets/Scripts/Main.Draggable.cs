@@ -29,6 +29,7 @@ public partial class Main : MonoBehaviour
 
     private void UnSelectDraggable()
     {
+        Debug.Log("SelectedObject is unchosen");
         Debug.Log(selectedGo.layer + " -> " + LayerMask.GetMask("Draggable"));
         selectedGo.layer = LayerMask.NameToLayer("Draggable");
         selectedGo = null;
@@ -59,7 +60,7 @@ public partial class Main : MonoBehaviour
         {
             SphereCollider thisCollider = selectedGo.GetComponent<SphereCollider>();
             Collider[] hitColliders = Physics.OverlapSphere(thisCollider.transform.position, thisCollider.radius, LayerMask.GetMask("Draggable"));
-            if (hitColliders.Length > 0 && !thisCollider.Equals(hitColliders[0]))
+            if (hitColliders.Length > 0)
             {
                 Destroy(hitColliders[0].gameObject);
             }

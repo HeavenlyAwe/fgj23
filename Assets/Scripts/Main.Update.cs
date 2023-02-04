@@ -35,6 +35,7 @@ public partial class Main : MonoBehaviour
         //CheckIfDroppedOnTarget();
     
         touchTimer += Time.deltaTime;
+        tapTimer += Time.deltaTime;
 
         //if (selectedGo != null)
         //{
