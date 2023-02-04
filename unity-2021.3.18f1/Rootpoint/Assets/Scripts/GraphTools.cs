@@ -1,5 +1,4 @@
 using System;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 namespace GraphTools
@@ -32,10 +31,6 @@ namespace GraphTools
 
         public Node(int value, Node[] parents)
         {
-            foreach (var e in parents)
-            {
-                Debug.Log(e.value);
-            }
             this.value = value;
             this.parents = parents;
             ID = nodeCount++;
@@ -66,8 +61,6 @@ namespace GraphTools
 
         public void SuperDivide(Node node, int n)
         {
-            Debug.Log("Superdivide node with value " + node.value + " by " + n);
-
             if (n > node.value)
             {
                 n = node.value;
