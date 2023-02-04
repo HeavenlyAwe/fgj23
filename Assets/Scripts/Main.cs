@@ -1,12 +1,8 @@
 using GraphTools;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.Controls;
 using UnityEngine.InputSystem.EnhancedTouch;
-using static UnityEditor.FilePathAttribute;
 
 public partial class Main : MonoBehaviour
 {
@@ -15,7 +11,6 @@ public partial class Main : MonoBehaviour
     GameObject playerGo;
     [HideInInspector]
     PlayerInput playerInput;
-
     [HideInInspector]
     GameObject ghostBallGo;
 
@@ -38,6 +33,9 @@ public partial class Main : MonoBehaviour
 
     float touchTimer;
     int tapCount = 0;
+
+    float tapTimer;
+    float tapCooldown = 1.0f;
 
     private void OnEnable()
     {
@@ -63,12 +61,14 @@ public partial class Main : MonoBehaviour
     {
         touchPosition = context.ReadValue<Vector2>();
         var oldIsDragging = isDragging;
-        isDragging = (Vector2.Distance(touchPosition, originalTouchPosition) > 20.0f && selectedGo != null);
+        isDragging = ( (Vector2.Distance(touchPosition, originalTouchPosition) > 20.0f && selectedGo != null) || isDragging);
         if (!oldIsDragging && isDragging) StartDragging(); 
     }
 
     private void TouchPressedStarted(InputAction.CallbackContext context)
     {
+        if (isPressed) return;
+
         var x = Touchscreen.current.position.x.ReadValue();
         var y = Touchscreen.current.position.y.ReadValue();
 
@@ -86,7 +86,6 @@ public partial class Main : MonoBehaviour
 
             touchTimer = 0.0f;
         }
-
     }
 
     private void TouchPressedCanceled(InputAction.CallbackContext context)
@@ -100,8 +99,8 @@ public partial class Main : MonoBehaviour
             {
                 Destroy(hitColliders[0].gameObject);
             }
-            UnSelectDraggable();
         }
+        UnSelectDraggable();
     }
 
 }
