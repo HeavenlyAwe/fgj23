@@ -7,4 +7,5 @@ public class Blob : MonoBehaviour
 {
     public Node node;
     public Vector3 velocity;
+    public float magnitude;
 }
