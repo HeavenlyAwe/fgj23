@@ -10,6 +10,12 @@ public partial class Main : MonoBehaviour
         Debug.Log("SelectedObject is chosen");
         Debug.Log(selectedGo.layer + " -> " + LayerMask.GetMask("Ignore Raycast"));
 
+        if (selectedGo.GetComponent<Blob>().node.Equals(graph.root))
+        {
+            StopDragging("Ignore Raycast");
+            return;
+        }
+
         selectedGo.layer = LayerMask.NameToLayer("Ignore Raycast");
         // Create Ghost object for preserving BOID logic
         ghostBallGo = Instantiate(Resources.Load<GameObject>("GhostBall"), selectedGo.transform.position, Quaternion.identity);

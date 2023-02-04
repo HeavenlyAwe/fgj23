@@ -107,6 +107,7 @@ public partial class Main : MonoBehaviour
         {
             Debug.Log("  Selecting -->" + previouslySelectedGo + " " + selectedGo);
             selectedGo = hit.transform.gameObject;
+
             tapCount = (previouslySelectedGo == selectedGo) ? tapCount + 1 : 1;
             previouslySelectedGo = selectedGo;
 
