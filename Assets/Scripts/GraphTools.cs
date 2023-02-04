@@ -1,10 +1,5 @@
-using Mono.Cecil.Cil;
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting.FullSerializer;
 using UnityEngine;
-using UnityEngine.Animations;
 
 namespace GraphTools
 {
@@ -15,33 +10,21 @@ namespace GraphTools
         public int value;
         public Node[] parents = new Node[2];
         public Node[] children = new Node[5];
+        public int childCount = 0;
 
         public Node(int value, Node parent = null)
         {
             this.value = value;
             parents[0] = parent;
-            nodeCount++;
+            ID = nodeCount++;
+            if (parent != null) parent.childCount++;
         }
 
         public Node(int value, Node[] parents)
         {
             this.value = value;
             this.parents = parents;
-            nodeCount++;
-        }
-
-        public Node(int value, Node[] parents, Node[] children) 
-        {
-            if (children.Length > this.children.Length)
-            {
-                Debug.LogError("Child count exceeds allowed number!");
-                return;
-            }
-
-            this.value = value;
-            this.parents = parents;
-
-            nodeCount++;
+            ID = nodeCount++;
         }
 
         public static Node operator +(Node a, Node b) => new(a.value + b.value, new[] { a, b });
@@ -73,7 +56,7 @@ namespace GraphTools
 
             for (int i = 0; i < sp.Count2; i++)
             {
-                node.children[sp.Count1 - 1 + i] = new Node(sp.Value1, node);
+                node.children[sp.Count1 + i] = new Node(sp.Value2, node);
             }
         }
 
@@ -81,27 +64,29 @@ namespace GraphTools
         public void DebugNodes()
         {
             checkedNodes = new int[Node.nodeCount];
-            TraverseGraph(root, () =>
+            TraverseGraph(root, (node) =>
             {
-                foreach (var child in root.children)
+                var childString = "";
+                foreach (var child in node.children)
                 {
-                    Debug.Log(child.value);
+                    if (child != null) childString += " " + child.value.ToString();
                 }
+                Debug.Log(node.value + childString);
             });
         }
 
-        public void TraverseGraph(Node root, Action callback) 
+        public void TraverseGraph(Node root, Action<Node> callback) 
         {
             checkedNodes[root.ID] = 1;
-            callback?.Invoke();
+            callback?.Invoke(root);
             foreach (var child in root.children)
             {
-                if (checkedNodes[child.ID] == 0)
+                if (child == null) continue;
+                if (checkedNodes[child.ID] == 0 && child.childCount > 0)
                 {
                     TraverseGraph(child, callback);
                 } 
             }
-
         }
     }
 }
