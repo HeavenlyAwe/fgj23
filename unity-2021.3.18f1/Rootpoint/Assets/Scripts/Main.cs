@@ -22,7 +22,9 @@ public partial class Main : MonoBehaviour
 
     InputAction mousePressAction;
 
-    public bool isPressed, isDragging;
+    [Header("Informative Values")]
+    public bool isPressed;
+    public bool isDragging;
     
     public GameObject selectedGo = null;
     public GameObject previouslySelectedGo = null;
@@ -30,8 +32,10 @@ public partial class Main : MonoBehaviour
     public Vector2 touchPosition = Vector2.zero;
     public Vector2 originalTouchPosition = Vector2.zero;
 
-    // Blob movement properties
+    public int score = 0;
 
+    // Blob movement properties
+    [Header("Blob Movement")]
     public float Clamping = 1f;
     public float Friction = 0.8f;
 
@@ -120,10 +124,30 @@ public partial class Main : MonoBehaviour
             Collider[] hitColliders = Physics.OverlapSphere(thisCollider.transform.position, thisCollider.radius, LayerMask.GetMask("Draggable"));
             if (hitColliders.Length > 0 && !thisCollider.Equals(hitColliders[0]))
             {
+                Node node1 = thisCollider.gameObject.GetComponent<Blob>().node;
+                Node node2 = hitColliders[0].gameObject.GetComponent<Blob>().node;
+                MergeTwoNodes(node1, node2);
                 Destroy(hitColliders[0].gameObject);
             }
         }
-        UnSelectDraggable();
+        StopDragging();
     }
 
+    private void MergeTwoNodes(Node node1, Node node2)
+    {
+        var sum = node1.value + node2.value;
+        Debug.Log(sum);
+
+        if (squareRootMap.ContainsKey(sum))
+        {
+            PlayScoreSound();
+            score += squareRootMap[sum];
+        }
+    }
+
+
+    public void PlayScoreSound()
+    {
+        GetComponent<AudioSource>().Play();
+    }
 }
