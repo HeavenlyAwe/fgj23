@@ -14,6 +14,10 @@ public partial class Main : MonoBehaviour
     GameObject playerGo;
     [HideInInspector]
     PlayerInput playerInput;
+
+    [HideInInspector]
+    GameObject ghostBallGo;
+
     [HideInInspector]
     Camera mainCamera;
 
@@ -64,29 +68,6 @@ public partial class Main : MonoBehaviour
     private void TouchPressedCanceled(InputAction.CallbackContext context)
     {
         isPressed = false;
-    }
-
-    private void SelectDraggable(in RaycastHit hit)
-    {
-        Debug.Log("SelectedObject is chosen");
-        selectedGameObject = hit.transform.gameObject;
-
-        Debug.Log(selectedGameObject.layer + " -> " + LayerMask.GetMask("Ignore Raycast"));
-        selectedGameObject.layer = 2;
-
-        // Create Ghost object for preserving BOID logic
-
-
-    }
-
-
-    private void UnSelectDraggable()
-    {
-        Debug.Log(selectedGameObject.layer + " -> " + LayerMask.GetMask("Draggable"));
-        selectedGameObject.layer = 6;
-        selectedGameObject = null;
-
-        // Destroy the Ghost object when the current object is dropped
     }
 
 }
