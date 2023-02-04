@@ -106,6 +106,8 @@ public partial class Main : MonoBehaviour
             tapCount = (previouslySelectedGo == selectedGo) ? tapCount + 1 : 1;
             previouslySelectedGo = selectedGo;
 
+            selectedGo.GetComponent<Blob>().node.selected = true;
+
             tapTimer = 0.0f;
             tapTimerDone = false;
         }
@@ -123,6 +125,7 @@ public partial class Main : MonoBehaviour
                 Destroy(hitColliders[0].gameObject);
             }
         }
+        selectedGo.GetComponent<Blob>().node.selected = false;
         UnSelectDraggable();
     }
 

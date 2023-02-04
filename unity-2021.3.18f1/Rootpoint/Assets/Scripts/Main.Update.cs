@@ -44,6 +44,11 @@ public partial class Main : MonoBehaviour
                 Vector3 collideDirection;
                 if (blobComponent != null)
                 {
+                    // If node is currently selected and dragged by player, don't contribute to collisions
+                    if (blobComponent.node.selected)
+                    {
+                        continue;
+                    }
                     // Closest point doesn't work if spheres already intersect too much, then they just merge
                     collideDirection = blob.transform.position - collider.gameObject.transform.position;
                 }

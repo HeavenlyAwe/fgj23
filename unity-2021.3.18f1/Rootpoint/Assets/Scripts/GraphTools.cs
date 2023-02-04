@@ -15,6 +15,7 @@ namespace GraphTools
         public int depth = -1;
         public Vector3 position = Vector3.zero;
         public GameObject gameObject;
+        public bool selected = false;
 
         public Node(int value, Node parent = null)
         {
