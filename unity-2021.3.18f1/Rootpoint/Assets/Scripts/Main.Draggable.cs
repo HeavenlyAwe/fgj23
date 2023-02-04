@@ -18,14 +18,14 @@ public partial class Main : MonoBehaviour
         previouslySelectedGo = null;
     }
 
-    private void StopDragging()
+    private void StopDragging(string layerName)
     {
         isDragging = false;
         if (selectedGo == null) return;
 
         Debug.Log("SelectedObject is unchosen");
-        Debug.Log(selectedGo.layer + " -> " + LayerMask.GetMask("Draggable"));
-        selectedGo.layer = LayerMask.NameToLayer("Draggable");
+        Debug.Log(selectedGo.layer + " -> " + LayerMask.NameToLayer(layerName));
+        selectedGo.layer = LayerMask.NameToLayer(layerName);
         selectedGo = null;
         // Destroy the Ghost object when the current object is dropped
         Destroy(ghostBallGo);

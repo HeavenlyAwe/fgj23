@@ -120,6 +120,7 @@ public partial class Main : MonoBehaviour
     private void TouchPressedCanceled(InputAction.CallbackContext context)
     {
         isPressed = false;
+        var resultLayer = "Draggable";
         if (isDragging && selectedGo != null)
         {
             SphereCollider thisCollider = selectedGo.GetComponent<SphereCollider>();
@@ -128,24 +129,23 @@ public partial class Main : MonoBehaviour
             {
                 Node node1 = thisCollider.gameObject.GetComponent<Blob>().node;
                 Node node2 = hitColliders[0].gameObject.GetComponent<Blob>().node;
+
+                hitColliders[0].gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
+                resultLayer = "Ignore Raycast";
+
                 MergeTwoNodes(node1, node2);
-                Destroy(hitColliders[0].gameObject);
+                //Destroy(hitColliders[0].gameObject);
             }
             selectedGo.GetComponent<Blob>().node.selected = false;
         }
-        StopDragging();
+        StopDragging(resultLayer);
     }
 
     private void MergeTwoNodes(Node node1, Node node2)
     {
-        var sum = node1.value + node2.value;
-        Debug.Log(sum);
-
-        if (squareRootMap.ContainsKey(sum))
-        {
-            PlayScoreSound();
-            score += squareRootMap[sum];
-        }
+        var newNode = node1 + node2;
+        var spawnPos = new Vector3((node1.position.x + node2.position.x) / 2, (node1.position.y + node2.position.y) / 2 - 1.0f, 0.0f);
+        SpawnNode(newNode, spawnPos);
     }
 
 

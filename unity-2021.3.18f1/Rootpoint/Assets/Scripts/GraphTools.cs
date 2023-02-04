@@ -32,12 +32,22 @@ namespace GraphTools
 
         public Node(int value, Node[] parents)
         {
+            foreach (var e in parents)
+            {
+                Debug.Log(e.value);
+            }
             this.value = value;
             this.parents = parents;
             ID = nodeCount++;
         }
 
-        public static Node operator +(Node a, Node b) => new(a.value + b.value, new[] { a, b });
+        public static Node operator +(Node a, Node b)
+        {
+            var newNode = new Node(a.value + b.value, new[] { a, b });
+            a.children[0] = newNode;
+            b.children[0] = newNode;
+            return newNode;
+        } 
     }
 
     public class Graph

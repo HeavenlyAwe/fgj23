@@ -1,12 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
-
+using GraphTools;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
 using UnityEngine.InputSystem.EnhancedTouch;
 using static UnityEditor.FilePathAttribute;
+using System.Xml.Serialization;
 
 public partial class Main : MonoBehaviour
 {
@@ -76,7 +76,12 @@ public partial class Main : MonoBehaviour
 
             node.position = blob.transform.position;
             var lineRenderer = blob.GetComponent<LineRenderer>();
-            lineRenderer.SetPositions(new[] { blob.transform.position, node.parents[0].position });
+            
+            var vert1 = node.parents[0].position;
+            var vert2 = node.position;
+            var vert3 = (node.parents[1] != null) ? node.parents[1].position : node.position;
+
+            lineRenderer.SetPositions(new[] { vert1, vert2, vert3 });
         });
     }
 
@@ -107,25 +112,8 @@ public partial class Main : MonoBehaviour
                     {
                         if (!startNode.Equals(node))
                         {
-                            var clampMin = wallLeft.transform.position.x + 0.1f;
-                            var clampMax = wallRight.transform.position.x - 0.1f;
                             var spawnPos = previouslySelectedGo.transform.position + new Vector3(i++, -1, 0);
-                            spawnPos = new Vector3(Mathf.Clamp(spawnPos.x, clampMin, clampMax), spawnPos.y, spawnPos.z);
-
-                            var go = Instantiate(nodeGo, spawnPos, Quaternion.identity);
-                            if (node.value == 1)
-                            {
-                                go.layer = LayerMask.NameToLayer("Ignore Raycast");
-                            }
-                            go.GetComponent<Blob>().node = node;
-                            go.transform.GetChild(0).GetComponent<TextMesh>().text = node.value.ToString();
-
-                            var lineRenderer = go.GetComponent<LineRenderer>();
-
-                            node.position = go.transform.position;
-                            node.gameObject = go;
-
-                            lineRenderer.SetPositions(new[] { node.position, node.parents[0].position });
+                            SpawnNode(node, spawnPos);
                         }
                     });
                     previouslySelectedGo.layer = LayerMask.NameToLayer("Ignore Raycast");
@@ -135,5 +123,44 @@ public partial class Main : MonoBehaviour
                 tapTimerDone = true;
             }
         }
+    }
+
+    public void SpawnNode(Node node, Vector3 spawnPos)
+    {
+        var clampMin = wallLeft.transform.position.x + 0.1f;
+        var clampMax = wallRight.transform.position.x - 0.1f;
+        spawnPos = new Vector3(Mathf.Clamp(spawnPos.x, clampMin, clampMax), spawnPos.y, spawnPos.z);
+
+        var go = Instantiate(nodeGo, spawnPos, Quaternion.identity);
+
+
+        if (squareRootMap.ContainsKey(node.value) || node.value == 1)
+        {
+            if (node.value != 1) 
+            {
+                PlayScoreSound();
+                score += squareRootMap[node.value] - 1;
+                go.GetComponent<MeshRenderer>().material = Resources.Load<Material>("Materials/Success");
+            }
+            else
+            {
+                go.GetComponent<MeshRenderer>().material = Resources.Load<Material>("Materials/Fail");
+            }
+            go.layer = LayerMask.NameToLayer("Ignore Raycast");
+        }
+
+        go.GetComponent<Blob>().node = node;
+        go.transform.GetChild(0).GetComponent<TextMesh>().text = node.value.ToString();
+
+        var lineRenderer = go.GetComponent<LineRenderer>();
+
+        node.position = go.transform.position;
+        node.gameObject = go;
+
+        var vert1 = node.parents[0].position;
+        var vert2 = node.position;
+        var vert3 = (node.parents[1] != null) ? node.parents[1].position : node.position;
+
+        lineRenderer.SetPositions(new[] { vert1, vert2, vert3 });
     }
 }
