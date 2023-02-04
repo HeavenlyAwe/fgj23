@@ -1,3 +1,4 @@
+using GraphTools;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -24,11 +25,19 @@ public partial class Main : MonoBehaviour
     InputAction touchPressAction;
     InputAction touchPositionAction;
 
-    public bool isPressed;
-    public GameObject draggingGo = null;
-    private Vector3 touchPosition = Vector3.zero;
+    public bool isPressed, isDragging;
+    public GameObject selectedGo = null;
+    public Vector3 selectedGoPos = Vector3.zero;
+    public Vector2 touchPosition = Vector2.zero;
+    public Vector2 originalTouchPosition = Vector2.zero;
+
+    Graph graph;
+    GameObject nodeGo;
 
     SplitterTools.Splitter splitterTools;
+
+    float touchTimer;
+    int tapCount = 0;
 
     private void OnEnable()
     {
@@ -53,6 +62,9 @@ public partial class Main : MonoBehaviour
     private void TouchPositionPerformed(InputAction.CallbackContext context)
     {
         touchPosition = context.ReadValue<Vector2>();
+        var oldIsDragging = isDragging;
+        isDragging = (Vector2.Distance(touchPosition, originalTouchPosition) > 20.0f && selectedGo != null);
+        if (!oldIsDragging && isDragging) StartDragging(); 
     }
 
     private void TouchPressedStarted(InputAction.CallbackContext context)
@@ -60,14 +72,36 @@ public partial class Main : MonoBehaviour
         var x = Touchscreen.current.position.x.ReadValue();
         var y = Touchscreen.current.position.y.ReadValue();
 
-        touchPosition = new Vector3(x, y, 0.0f);
+        touchPosition = new Vector2(x, y);
+        originalTouchPosition = touchPosition;
 
         isPressed = true;
+
+        var ray = mainCamera.ScreenPointToRay(touchPosition);
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit, 300.0f, LayerMask.GetMask("Draggable")))
+        {
+            tapCount = (hit.transform.gameObject.Equals(selectedGo)) ? tapCount + 1 : 1;
+            selectedGo = hit.transform.gameObject;
+
+            touchTimer = 0.0f;
+        }
+
     }
 
     private void TouchPressedCanceled(InputAction.CallbackContext context)
     {
         isPressed = false;
+        if (isDragging && selectedGo != null)
+        {
+            SphereCollider thisCollider = selectedGo.GetComponent<SphereCollider>();
+            Collider[] hitColliders = Physics.OverlapSphere(thisCollider.transform.position, thisCollider.radius, LayerMask.GetMask("Draggable"));
+            if (hitColliders.Length > 0 && !thisCollider.Equals(hitColliders[0]))
+            {
+                Destroy(hitColliders[0].gameObject);
+            }
+            UnSelectDraggable();
+        }
     }
 
 }

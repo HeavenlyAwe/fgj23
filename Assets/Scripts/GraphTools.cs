@@ -1,4 +1,5 @@
 using System;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 namespace GraphTools
@@ -53,6 +54,7 @@ namespace GraphTools
 
         public void SuperDivide(Node node, int n)
         {
+            Debug.Log("Superdivide node with value " + node.value + " by " + n);
             var st = new SplitterTools.Splitter();
             var sp = st.CountSplitValues(node.value, n);
 
@@ -84,8 +86,13 @@ namespace GraphTools
 
         public void TraverseGraph(Action<Node> callback)
         {
+            TraverseGraph(root, callback);
+        }
+
+        public void TraverseGraph(Node node, Action<Node> callback)
+        {
             checkedNodes = new int[Node.nodeCount];
-            DFS(root, callback);
+            DFS(node, callback);
         }
 
         public void DFS(Node root, Action<Node> callback) 

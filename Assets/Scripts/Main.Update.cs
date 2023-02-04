@@ -12,15 +12,15 @@ public partial class Main : MonoBehaviour
 {
     private void UpdateDraggablePosition()
     {
-        if (isPressed && draggingGo != null)
+        if (isDragging)
         {
             var ray = mainCamera.ScreenPointToRay(touchPosition);
             RaycastHit hit;
             if (Physics.Raycast(ray, out hit, 500.0f, LayerMask.GetMask("DraggingPlane")))
             {
-                if (draggingGo != null)
+                if (selectedGo != null)
                 {
-                    draggingGo.transform.position = new Vector3(hit.point.x, hit.point.y, 0.0f);
+                    selectedGo.transform.position = Vector3.Lerp(selectedGo.transform.position, new Vector3(hit.point.x, hit.point.y, 0.0f), 0.1f);
                 }
             }
         }
@@ -28,10 +28,48 @@ public partial class Main : MonoBehaviour
 
     void Update()
     {
-        CheckIfDragging();
+        CheckIfHoldOrTap();
 
         UpdateDraggablePosition();
 
-        CheckIfDroppedOnTarget();
+        //CheckIfDroppedOnTarget();
+    
+        touchTimer += Time.deltaTime;
+
+        //if (selectedGo != null)
+        //{
+        //    if (touchTimer > 0.5f && !isDragging)
+        //    {
+        //        //if (isPressed)
+        //        //{
+        //        //    StartDragging();
+        //        //}
+        //        //else
+        //        {
+        //            int i = 0;
+        //            var startNode = selectedGo.GetComponent<Blob>().node;
+        //            graph.SuperDivide(startNode, tapCount+1);
+        //            graph.TraverseGraph(startNode, (node) =>
+        //            {
+        //                if (!startNode.Equals(node))
+        //                {
+        //                    var go = Instantiate(nodeGo, selectedGo.transform.position + new Vector3(i++, -1, 0), Quaternion.identity);
+        //                    go.GetComponent<Blob>().node = node;
+        //                    go.transform.GetChild(0).GetComponent<TextMesh>().text = node.value.ToString();
+        //                    node.position = go.transform.position;
+        //                }
+        //            });
+        //            selectedGo.layer = LayerMask.NameToLayer("Ignore Raycast");
+        //        }
+        //    }
+        //    else if (!isDragging)
+        //    {
+        //        StartDragging();
+        //    }
+        //}
+
+        // if touchTimer > threshold -> start dragging
+        // else -> tapCounter++
+    
     }
 }

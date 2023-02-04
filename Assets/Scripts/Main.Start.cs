@@ -14,6 +14,7 @@ public partial class Main : MonoBehaviour
         EnhancedTouchSupport.Enable();
 
         playerGo = Instantiate(Resources.Load<GameObject>("Player"));
+        nodeGo = Resources.Load<GameObject>("Metaball");
         playerInput = playerGo.GetComponent<PlayerInput>();
         mainCamera = Camera.main;
 
@@ -23,20 +24,11 @@ public partial class Main : MonoBehaviour
 
     void Start()
     {
-        splitterTools = new SplitterTools.Splitter();
 
-        SplitterTools.SplitterValue value = splitterTools.CountSplitValues(25, 4);
+        graph = new Graph(new Node(10));
 
-        Debug.Log(value.Count1 + "x " + value.Value1 + " and " + value.Count2 + "x " + value.Value2);
-
-        //splitterTools = new SplitterTools.Splitter();
-        //SplitterTools.SplitterValue value = splitterTools.CountSplitValues(25, 4);
-        //Debug.Log(value.Count1 + "x " + value.Value1 + " and " + value.Count2 + "x " + value.Value2);
-
-        var graph = new Graph();
-        graph.SuperDivide(graph.root, 3);
-        graph.SuperDivide(graph.root.children[0], 2);
-        graph.DebugNodes();
+        //graph.SuperDivide(graph.root, 3);
+        //graph.SuperDivide(graph.root.children[0], 2);
 
         graph.TraverseGraph((node) =>
         {
