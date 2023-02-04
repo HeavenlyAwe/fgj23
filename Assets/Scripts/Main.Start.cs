@@ -29,12 +29,13 @@ public partial class Main : MonoBehaviour
 
         graph = new Graph(new Node(10));
 
-        //graph.SuperDivide(graph.root, 3);
-        //graph.SuperDivide(graph.root.children[0], 2);
+        graph.SuperDivide(graph.root, 3);
+        graph.SuperDivide(graph.root.children[0], 2);
 
         graph.TraverseGraph((node) =>
         {
             var go = Instantiate(Resources.Load<GameObject>("Metaball"));
+            node.gameObject = go;
             go.transform.GetChild(0).GetComponent<TextMesh>().text = node.value.ToString();
 
             go.GetComponent<Blob>().node = node;

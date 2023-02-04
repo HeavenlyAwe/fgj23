@@ -26,14 +26,55 @@ public partial class Main : MonoBehaviour
         }
     }
 
+    void UpdateBlobMovement()
+    {
+        graph.TraverseGraph((node) =>
+        {
+            GameObject blob = node.gameObject;
+            SphereCollider thisCollider = blob.GetComponent<SphereCollider>();
+            Collider[] hitColliders = Physics.OverlapSphere(
+                thisCollider.transform.position,
+                thisCollider.radius);
+            Vector3 newDirection = new Vector3(0, 0, 0);
+            foreach (Collider collider in hitColliders)
+            {
+                Blob blobComponent = collider.gameObject.GetComponent<Blob>();
+                Vector3 collideDirection;
+                if (blobComponent != null) {
+                    // Closest point doesn't work if spheres already intersect too much, then they just merge
+                    collideDirection = blob.transform.position - collider.gameObject.transform.position;
+                } else {
+                    // Object position doesn't work with walls. We want to move away from wall and not from the (possibly) far away origin
+                    collideDirection = blob.transform.position - collider.ClosestPoint(blob.transform.position);
+                }
+                float magnitude = collideDirection.magnitude;
+                if (magnitude == 0) {
+                    magnitude = 0.001f;
+                }
+                float inverse = 1 / magnitude;
+                newDirection += Vector3.Scale(collideDirection, new Vector3(inverse, inverse, inverse));
+            }
+            newDirection = Vector3.ClampMagnitude(newDirection, Clamping);
+            Vector3 velocity = blob.GetComponent<Blob>().velocity;
+            velocity += newDirection;
+            velocity *= Friction;// * Time.deltaTime;
+
+            blob.transform.Translate(velocity * Time.deltaTime);
+            blob.GetComponent<Blob>().velocity = velocity;
+            blob.GetComponent<Blob>().magnitude = Mathf.Round(velocity.magnitude*100);
+        });
+    }
+
     void Update()
     {
         CheckIfHoldOrTap();
 
         UpdateDraggablePosition();
 
+        UpdateBlobMovement();
+
         //CheckIfDroppedOnTarget();
-    
+
         touchTimer += Time.deltaTime;
         tapTimer += Time.deltaTime;
 
@@ -71,6 +112,6 @@ public partial class Main : MonoBehaviour
 
         // if touchTimer > threshold -> start dragging
         // else -> tapCounter++
-    
+
     }
 }

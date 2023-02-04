@@ -28,6 +28,11 @@ public partial class Main : MonoBehaviour
     public Vector2 touchPosition = Vector2.zero;
     public Vector2 originalTouchPosition = Vector2.zero;
 
+    // Blob movement properties
+
+    public float Clamping = 1f;
+    public float Friction = 0.8f;
+
     Graph graph;
     GameObject nodeGo;
 
@@ -73,7 +78,7 @@ public partial class Main : MonoBehaviour
         touchPosition = context.ReadValue<Vector2>();
         var oldIsDragging = isDragging;
         isDragging = ( (Vector2.Distance(touchPosition, originalTouchPosition) > 20.0f && selectedGo != null) || isDragging);
-        if (!oldIsDragging && isDragging) StartDragging(); 
+        if (!oldIsDragging && isDragging) StartDragging();
     }
 
     private void TouchPressedStarted(InputAction.CallbackContext context)

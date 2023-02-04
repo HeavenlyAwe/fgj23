@@ -14,6 +14,7 @@ namespace GraphTools
         public int childCount = 0;
         public int depth = -1;
         public Vector3 position = Vector3.zero;
+        public GameObject gameObject;
 
         public Node(int value, Node parent = null)
         {
@@ -95,7 +96,7 @@ namespace GraphTools
             DFS(node, callback);
         }
 
-        public void DFS(Node root, Action<Node> callback) 
+        public void DFS(Node root, Action<Node> callback)
         {
             checkedNodes[root.ID] = 1;
             callback?.Invoke(root);
@@ -105,7 +106,7 @@ namespace GraphTools
                 if (checkedNodes[child.ID] == 0)
                 {
                     DFS(child, callback);
-                } 
+                }
             }
         }
     }
