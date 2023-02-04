@@ -135,40 +135,5 @@ public partial class Main : MonoBehaviour
                 tapTimerDone = true;
             }
         }
-        //if (selectedGo != null)
-        //{
-        //    if (touchTimer > 0.5f && !isDragging)
-        //    {
-        //        //if (isPressed)
-        //        //{
-        //        //    StartDragging();
-        //        //}
-        //        //else
-        //        {
-        //            int i = 0;
-        //            var startNode = selectedGo.GetComponent<Blob>().node;
-        //            graph.SuperDivide(startNode, tapCount+1);
-        //            graph.TraverseGraph(startNode, (node) =>
-        //            {
-        //                if (!startNode.Equals(node))
-        //                {
-        //                    var go = Instantiate(nodeGo, selectedGo.transform.position + new Vector3(i++, -1, 0), Quaternion.identity);
-        //                    go.GetComponent<Blob>().node = node;
-        //                    go.transform.GetChild(0).GetComponent<TextMesh>().text = node.value.ToString();
-        //                    node.position = go.transform.position;
-        //                }
-        //            });
-        //            selectedGo.layer = LayerMask.NameToLayer("Ignore Raycast");
-        //        }
-        //    }
-        //    else if (!isDragging)
-        //    {
-        //        StartDragging();
-        //    }
-        //}
-
-        // if touchTimer > threshold -> start dragging
-        // else -> tapCounter++
-
     }
 }

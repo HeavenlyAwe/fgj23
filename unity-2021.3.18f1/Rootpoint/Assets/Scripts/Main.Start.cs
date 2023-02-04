@@ -9,9 +9,20 @@ using static UnityEditor.FilePathAttribute;
 using GraphTools;
 public partial class Main : MonoBehaviour
 {
+    Dictionary<int, int> squareRootMap = new Dictionary<int, int>();
+
+    private void PrecalculateSquares()
+    {
+        for (int squareRoot = 2; squareRoot < 100; squareRoot++)
+        {
+            squareRootMap[squareRoot * squareRoot] = squareRoot;
+        }
+    }
+
     void Awake()
     {
-        EnhancedTouchSupport.Enable();
+        PrecalculateSquares();
+        //EnhancedTouchSupport.Enable();
 
         playerGo = Instantiate(Resources.Load<GameObject>("Player"));
         nodeGo = Resources.Load<GameObject>("Metaball");
