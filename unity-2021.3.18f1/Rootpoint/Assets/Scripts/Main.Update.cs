@@ -28,6 +28,11 @@ public partial class Main : MonoBehaviour
 
     void UpdateBlobMovement()
     {
+        var materialProperty = new MaterialPropertyBlock();
+        // float[] floatArray= new float[] {0.1f, 1f};
+        float[] blobArray= new float[1000];
+        int blobCount = 0;
+
         graph.TraverseGraph((node) =>
         {
             GameObject blob = node.gameObject;
@@ -62,7 +67,36 @@ public partial class Main : MonoBehaviour
             blob.transform.Translate(velocity * Time.deltaTime);
             blob.GetComponent<Blob>().velocity = velocity;
             blob.GetComponent<Blob>().magnitude = Mathf.Round(velocity.magnitude*100);
+
+            blobArray[blobCount * 5] = blob.transform.position.x;
+            blobArray[blobCount * 5 + 1] = blob.transform.position.y;
+
+            // Turnwise R, G & B just for testing
+            if (blobCount % 3 == 0)
+            {
+                blobArray[blobCount * 5 + 2] = 1.0f;
+                blobArray[blobCount * 5 + 3] = 0.0f;
+                blobArray[blobCount * 5 + 4] = 0.0f;
+            } else if (blobCount % 3 == 1)
+            {
+                blobArray[blobCount * 5 + 2] = 0.0f;
+                blobArray[blobCount * 5 + 3] = 1.0f;
+                blobArray[blobCount * 5 + 4] = 0.0f;
+            } else
+            {
+                blobArray[blobCount * 5 + 2] = 0.0f;
+                blobArray[blobCount * 5 + 3] = 0.0f;
+                blobArray[blobCount * 5 + 4] = 1.0f;
+            }
+            blobCount++;
         });
+
+        // blobArray[0] = 1.0f;
+
+        materialProperty.SetInt("blobCount", blobCount);
+        materialProperty.SetFloatArray("blobArray", blobArray);
+        ShaderPlane.GetComponent<Renderer> ().SetPropertyBlock (materialProperty);
+
     }
 
     void Update()

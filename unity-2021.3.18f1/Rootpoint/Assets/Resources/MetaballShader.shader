@@ -7,7 +7,8 @@ Shader "Unlit/Metaballs"
     }
     SubShader
     {
-        Tags { "RenderType"="Opaque" }
+        Tags { "RenderType"="Transparent" }
+        // Tags { "RenderType"="Transparent" "Queue"="Transparent" }
         LOD 100
 
         Pass
@@ -48,6 +49,8 @@ Shader "Unlit/Metaballs"
 			#define samples 4
 
 			#define numballs 8
+            uniform int blobCount;
+            uniform float blobArray[1000];
 
 			// undefine this for numerical normals
 			#define ANALYTIC_NORMALS
@@ -72,7 +75,10 @@ Shader "Unlit/Metaballs"
 
 			//----------------------------------------------------------------
 
-			float4 blobs[numballs];
+			// float4 blobs[numballs];
+            // float4 blobs[blobCount];
+            // float4 blobs[200];
+            float4 blobs[20];
 
 			float sdMetaBalls(float3 pos)
 			{
@@ -82,7 +88,8 @@ Shader "Unlit/Metaballs"
 
 				float h = 1.0; // track Lipschitz constant
 
-				for (int i = 0; i < numballs; i++)
+				// for (int i = 0; i < numballs; i++)
+				for (int i = 0; i < blobCount; i++)
 				{
 					// bounding sphere for ball
 					float db = length(blobs[i].xyz - pos);
@@ -113,7 +120,8 @@ Shader "Unlit/Metaballs"
 			{
 				float3 nor = float3(0.0, 0.0001, 0.0);
 
-				for (int i = 0; i < numballs; i++)
+				// for (int i = 0; i < numballs; i++)
+				for (int i = 0; i < blobCount; i++)
 				{
 					float db = length(blobs[i].xyz - pos);
 					float x = clamp(db / blobs[i].w, 0.0, 1.0);
@@ -164,6 +172,9 @@ Shader "Unlit/Metaballs"
 				#endif
 			}
 
+            // uniform int blobCount;
+            // uniform float blobArray[1000];
+
             fixed4 frag (v2f i) : SV_Target
             {
 				//-----------------------------------------------------
@@ -201,18 +212,26 @@ Shader "Unlit/Metaballs"
 				// animate scene
 				//-----------------------------------------------------
 					float time = _Time.y + toff;
+                    time = 0;
 
 					// move metaballs
-					for (int i = 0; i < numballs; i++)
+					// for (int i = 0; i < numballs; i++)
+					for (int i = 0; i < blobCount; i++)
 					{
 						float h = float(i) / 8.0;
-						blobs[i].xyz = 2.0*sin(6.2831*hash3(h*1.17) + hash3(h*13.7)*time);
-						blobs[i].w = 1.7 + 0.9*sin(6.28*hash1(h*23.13));
+						// blobs[i].xyz = 2.0*sin(6.2831*hash3(h*1.17) + hash3(h*13.7)*time);
+						blobs[i].x = blobArray[i * 5];
+						blobs[i].y = blobArray[i * 5 + 1];
+						blobs[i].z = 0;
+						// blobs[i].w = 1.7 + 0.9*sin(6.28*hash1(h*23.13));
+						blobs[i].w = 1;
 					}
 
 					// move camera
 					float an = 0.5*time - 6.2831*(m.x - 0.5);
+                    an = 0;
 					float3 ro = float3(5.0*sin(an), 2.5*cos(0.4*an), -8.0*cos(an));
+                    ro = float3(7, 7, 7);
 					float3 ta = float3(0.0, 0.0, 0.0);
 
 					//-----------------------------------------------------
@@ -245,6 +264,7 @@ Shader "Unlit/Metaballs"
 					//iChannel0.x = 1.0 - iChannel0.x;
 					float3 col = pow(texCUBE(iChannel0, rd).xyz, float3(2.2, 2.2, 2.2));
 					//float3 col = texCUBE(iChannel0, rd).xyz;
+                    // col = float4(0.5, 0.5, 0.5, 0.5);
 
 					// raymarch
 					float2 tmat = intersect(ro, rd);
@@ -258,16 +278,23 @@ Shader "Unlit/Metaballs"
 						// materials
 						float3 mate = float3(0.0, 0.0, 0.0);
 						float w = 0.01;
-						for (int i = 0; i < numballs; i++)
+						// for (int i = 0; i < numballs; i++)
+						for (int i = 0; i < blobCount; i++)
 						{
 							float h = float(i) / 8.0;
 
 							// metaball color
-							float3 ccc = float3(1.0, 1.0, 1.0);
+							// float3 ccc = float3(1.0, 1.0, 1.0);
+							float3 ccc;
 							//ccc = lerp(ccc, float3(1.0, 0.60, 0.05), smoothstep(0.65, 0.66, sin(30.0*h)));
-							ccc = lerp(ccc, float3(1.0, 0.20, 0.55), smoothstep(0.65, 0.66, sin(30.0*h)));
+							// ccc = lerp(ccc, float3(1.0, 0.20, 0.55), smoothstep(0.65, 0.66, sin(30.0*h)));
 							//ccc = lerp(ccc, float3(0.3, 0.45, 0.25), smoothstep(0.65, 0.66, sin(15.0*h)));
-							ccc = lerp(ccc, float3(0.3, 0.20, 0.95), smoothstep(0.65, 0.66, sin(15.0*h)));
+							// ccc = lerp(ccc, float3(0.3, 0.20, 0.95), smoothstep(0.65, 0.66, sin(15.0*h)));
+
+                            ccc = float3(
+                                blobArray[i * 5 + 2],
+                                blobArray[i * 5 + 3],
+                                blobArray[i * 5 + 4]);
 
 							float x = clamp(length(blobs[i].xyz - pos) / blobs[i].w, 0.0, 1.0);
 							float p = 1.0 - x * x*(3.0 - 2.0*x);
@@ -298,8 +325,9 @@ Shader "Unlit/Metaballs"
 
 				// vigneting
 				tot *= 0.5 + 0.5*pow(16.0*q.x*q.y*(1.0 - q.x)*(1.0 - q.y), 0.15);
+                // tot *= blobArray[0];
 				//fragColor =
-				return float4(tot, 1.0);
+				return float4(tot, 0.5);
             }
             ENDCG
         }

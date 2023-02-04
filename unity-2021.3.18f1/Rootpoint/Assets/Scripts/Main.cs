@@ -33,6 +33,8 @@ public partial class Main : MonoBehaviour
     public float Clamping = 1f;
     public float Friction = 0.8f;
 
+    public GameObject ShaderPlane;
+
     Graph graph;
     GameObject nodeGo;
 
