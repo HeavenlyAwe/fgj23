@@ -26,24 +26,14 @@ public partial class Main : MonoBehaviour
 
     SplitterTools.Splitter splitterTools;
 
-    private void TouchPositionPerformed(InputAction.CallbackContext context)
-    {
-        Debug.Log("TouchDeltaPerformed() called");
-        Vector2 location = context.ReadValue<Vector2>();
-
-        touchPosition = location;
-    }
-
     private void OnEnable()
     {
-        Debug.Log("OnEnable() called");
-
         TouchSimulation.Enable();
 
         touchPositionAction.performed += TouchPositionPerformed;
 
-        touchPressAction.started += TouchStarted;
-        touchPressAction.canceled += TouchCanceled;
+        touchPressAction.started += TouchPressedStarted;
+        touchPressAction.canceled += TouchPressedCanceled;
     }
 
     private void OnDisable()
@@ -52,11 +42,16 @@ public partial class Main : MonoBehaviour
 
         touchPositionAction.performed -= TouchPositionPerformed;
 
-        touchPressAction.started -= TouchStarted;
-        touchPressAction.canceled -= TouchCanceled;
+        touchPressAction.started -= TouchPressedStarted;
+        touchPressAction.canceled -= TouchPressedCanceled;
     }
 
-    private void TouchStarted(InputAction.CallbackContext context)
+    private void TouchPositionPerformed(InputAction.CallbackContext context)
+    {
+        touchPosition = context.ReadValue<Vector2>();
+    }
+
+    private void TouchPressedStarted(InputAction.CallbackContext context)
     {
         var x = Touchscreen.current.position.x.ReadValue();
         var y = Touchscreen.current.position.y.ReadValue();
@@ -66,7 +61,7 @@ public partial class Main : MonoBehaviour
         isPressed = true;
     }
 
-    private void TouchCanceled(InputAction.CallbackContext context)
+    private void TouchPressedCanceled(InputAction.CallbackContext context)
     {
         isPressed = false;
     }
@@ -80,6 +75,8 @@ public partial class Main : MonoBehaviour
         selectedGameObject.layer = 2;
 
         // Create Ghost object for preserving BOID logic
+
+
     }
 
 
@@ -92,5 +89,4 @@ public partial class Main : MonoBehaviour
         // Destroy the Ghost object when the current object is dropped
     }
 
-    
 }
