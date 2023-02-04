@@ -43,6 +43,8 @@ public partial class Main : MonoBehaviour
             var go = Instantiate(Resources.Load<GameObject>("Metaball"));
             go.transform.GetChild(0).GetComponent<TextMesh>().text = node.value.ToString();
 
+            go.GetComponent<Blob>().node = node;
+
             // Set simulation position based on node data (skip root)
             if (node.parents.Length != 0)
             {
