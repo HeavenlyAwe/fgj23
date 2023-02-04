@@ -23,8 +23,10 @@ public partial class Main : MonoBehaviour
     InputAction mousePressAction;
 
     public bool isPressed, isDragging;
+    
     public GameObject selectedGo = null;
-    public Vector3 selectedGoPos = Vector3.zero;
+    public GameObject previouslySelectedGo = null;
+
     public Vector2 touchPosition = Vector2.zero;
     public Vector2 originalTouchPosition = Vector2.zero;
 
@@ -38,11 +40,9 @@ public partial class Main : MonoBehaviour
 
     SplitterTools.Splitter splitterTools;
 
-    float touchTimer;
-    int tapCount = 0;
-
+    bool tapTimerDone = false;
     float tapTimer;
-    float tapCooldown = 1.0f;
+    public int tapCount = 0;
 
     private void OnEnable()
     {
@@ -97,10 +97,13 @@ public partial class Main : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit, 300.0f, LayerMask.GetMask("Draggable")))
         {
-            tapCount = (hit.transform.gameObject.Equals(selectedGo)) ? tapCount + 1 : 1;
+            Debug.Log("  Selecting -->" + previouslySelectedGo + " " + selectedGo);
             selectedGo = hit.transform.gameObject;
+            tapCount = (previouslySelectedGo == selectedGo) ? tapCount + 1 : 1;
+            previouslySelectedGo = selectedGo;
 
-            touchTimer = 0.0f;
+            tapTimer = 0.0f;
+            tapTimerDone = false;
         }
     }
 

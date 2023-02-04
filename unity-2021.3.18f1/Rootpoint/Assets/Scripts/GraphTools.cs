@@ -56,6 +56,11 @@ namespace GraphTools
         public void SuperDivide(Node node, int n)
         {
             Debug.Log("Superdivide node with value " + node.value + " by " + n);
+
+            if (n > node.value)
+            {
+                n = node.value;
+            }
             var st = new SplitterTools.Splitter();
             var sp = st.CountSplitValues(node.value, n);
 

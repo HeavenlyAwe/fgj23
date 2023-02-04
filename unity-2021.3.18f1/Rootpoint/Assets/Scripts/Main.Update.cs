@@ -30,6 +30,8 @@ public partial class Main : MonoBehaviour
     {
         graph.TraverseGraph((node) =>
         {
+            if (node.gameObject == null) return;
+
             GameObject blob = node.gameObject;
             SphereCollider thisCollider = blob.GetComponent<SphereCollider>();
             Collider[] hitColliders = Physics.OverlapSphere(
@@ -40,15 +42,19 @@ public partial class Main : MonoBehaviour
             {
                 Blob blobComponent = collider.gameObject.GetComponent<Blob>();
                 Vector3 collideDirection;
-                if (blobComponent != null) {
+                if (blobComponent != null)
+                {
                     // Closest point doesn't work if spheres already intersect too much, then they just merge
                     collideDirection = blob.transform.position - collider.gameObject.transform.position;
-                } else {
+                }
+                else
+                {
                     // Object position doesn't work with walls. We want to move away from wall and not from the (possibly) far away origin
                     collideDirection = blob.transform.position - collider.ClosestPoint(blob.transform.position);
                 }
                 float magnitude = collideDirection.magnitude;
-                if (magnitude == 0) {
+                if (magnitude == 0)
+                {
                     magnitude = 0.001f;
                 }
                 float inverse = 1 / magnitude;
@@ -61,13 +67,13 @@ public partial class Main : MonoBehaviour
 
             blob.transform.Translate(velocity * Time.deltaTime);
             blob.GetComponent<Blob>().velocity = velocity;
-            blob.GetComponent<Blob>().magnitude = Mathf.Round(velocity.magnitude*100);
+            blob.GetComponent<Blob>().magnitude = Mathf.Round(velocity.magnitude * 100);
         });
     }
 
     void Update()
     {
-        CheckIfHoldOrTap();
+        //CheckIfHoldOrTap();
 
         UpdateDraggablePosition();
 
@@ -75,9 +81,41 @@ public partial class Main : MonoBehaviour
 
         //CheckIfDroppedOnTarget();
 
-        touchTimer += Time.deltaTime;
         tapTimer += Time.deltaTime;
 
+        if (previouslySelectedGo != null)
+        {
+            if (tapTimer >= 0.7f && !tapTimerDone)
+            {
+                Debug.Log("Tap timer run out");
+
+                if (!isDragging)
+                {
+                    int i = 0;
+                    var startNode = previouslySelectedGo.GetComponent<Blob>().node;
+                    graph.SuperDivide(startNode, Mathf.Clamp(tapCount + 1, 2, 5));
+                    graph.TraverseGraph(startNode, (node) =>
+                    {
+                        if (!startNode.Equals(node))
+                        {
+                            var go = Instantiate(nodeGo, previouslySelectedGo.transform.position + new Vector3(i++, -1, 0), Quaternion.identity);
+                            if (node.value == 1)
+                            {
+                                go.layer = LayerMask.NameToLayer("Ignore Raycast");
+                            }
+                            go.GetComponent<Blob>().node = node;
+                            go.transform.GetChild(0).GetComponent<TextMesh>().text = node.value.ToString();
+                            node.position = go.transform.position;
+                            node.gameObject = go;
+                        }
+                    });
+                    previouslySelectedGo.layer = LayerMask.NameToLayer("Ignore Raycast");
+                }
+
+                tapCount = 0;
+                tapTimerDone = true;
+            }
+        }
         //if (selectedGo != null)
         //{
         //    if (touchTimer > 0.5f && !isDragging)

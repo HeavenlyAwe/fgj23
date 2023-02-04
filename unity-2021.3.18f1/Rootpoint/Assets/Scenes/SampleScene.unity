@@ -177,7 +177,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 5
+  orthographic size: 8
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -403,11 +403,12 @@ MonoBehaviour:
   isPressed: 0
   isDragging: 0
   selectedGo: {fileID: 0}
-  selectedGoPos: {x: 0, y: 0, z: 0}
+  previouslySelectedGo: {fileID: 0}
   touchPosition: {x: 0, y: 0}
   originalTouchPosition: {x: 0, y: 0}
   Clamping: 1
   Friction: 0.8
+  tapCount: 0
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
