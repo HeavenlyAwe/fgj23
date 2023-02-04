@@ -25,7 +25,7 @@ public partial class Main : MonoBehaviour
     InputAction touchPositionAction;
 
     public bool isPressed;
-    public GameObject selectedGameObject = null;
+    public GameObject draggingGo = null;
     private Vector3 touchPosition = Vector3.zero;
 
     SplitterTools.Splitter splitterTools;
