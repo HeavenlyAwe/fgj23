@@ -64,6 +64,8 @@ public partial class Main : MonoBehaviour
     public AudioSource effectSource;
     public AudioSource backgroundMusic;
 
+    bool resetting = false;
+
     private void OnEnable()
     {
         //TouchSimulation.Enable();
@@ -192,32 +194,32 @@ public partial class Main : MonoBehaviour
         effectSource.PlayOneShot(audio[key]);
     }
 
-    IEnumerator ResetRoutine(float duration)
-    {
-        yield return new WaitForSeconds(duration);
-        ResetGame();
-    }
+    //IEnumerator ResetRoutine(float duration)
+    //{
+    //    yield return new WaitForSeconds(duration);
+    //    ResetGame();
+    //}
 
-    IEnumerator StartFade(AudioSource audioSource, float duration, float targetVolume)
-    {
-        float currentTime = 0;
-        float start = audioSource.volume;
-        while (currentTime < duration)
-        {
-            currentTime += Time.deltaTime;
-            audioSource.volume = Mathf.Lerp(start, targetVolume, currentTime / duration);
-            yield return null;
-        }
-        yield break;
-    }
+    //IEnumerator StartFade(AudioSource audioSource, float duration, float targetVolume)
+    //{
+    //    float currentTime = 0;
+    //    float start = audioSource.volume;
+    //    while (currentTime < duration)
+    //    {
+    //        currentTime += Time.deltaTime;
+    //        audioSource.volume = Mathf.Lerp(start, targetVolume, currentTime / duration);
+    //        yield return null;
+    //    }
+    //    yield break;
+    //}
 
-    public void GameBackButton()
-    {
-        PlaySound("scoreSound");
-        float duration = audio["scoreSound"].length - 2.0f;
-        StartCoroutine(StartFade(backgroundMusic, duration, 0.0f));
-        StartCoroutine(ResetRoutine(duration));
-    }
+    //public void GameBackButton()
+    //{
+    //    PlaySound("scoreSound");
+    //    float duration = audio["scoreSound"].length - 2.0f;
+    //    StartCoroutine(StartFade(backgroundMusic, duration, 0.0f));
+    //    StartCoroutine(ResetRoutine(duration));
+    //}
 
 
     public void VisualizeTapCount(int n)

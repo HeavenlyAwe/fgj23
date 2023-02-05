@@ -77,6 +77,8 @@ namespace GraphTools
             {
                 node.children[sp.Count1 + i] = new Node(sp.Value2, node);
             }
+
+            DebugNodes();
         }
 
         int[] checkedNodes = { };

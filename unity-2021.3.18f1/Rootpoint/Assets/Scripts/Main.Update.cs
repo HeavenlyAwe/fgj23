@@ -29,6 +29,8 @@ public partial class Main : MonoBehaviour
 
     void UpdateBlobMovement()
     {
+        if (resetting) return;
+
         var materialProperty = new MaterialPropertyBlock();
         // float[] floatArray= new float[] {0.1f, 1f};
         float[] blobArray= new float[1000];
@@ -142,6 +144,8 @@ public partial class Main : MonoBehaviour
     void Update()
     {
         //CheckIfHoldOrTap();
+
+        if (ui.GetChild(0).gameObject.activeSelf) return; 
 
         UpdateDraggablePosition();
 
