@@ -64,7 +64,11 @@ public partial class Main : MonoBehaviour
         ui.Find("MainMenu").Find("MainMenuButtons").Find("EnableMetaballs").GetComponent<UnityEngine.UI.Toggle>().onValueChanged.AddListener((value) =>
         {
             useMetaballs = value;
+            ShaderPlane.GetComponent<MeshRenderer>().enabled = useMetaballs;
         });
+
+        // Start disabled. Please change the toggle button in the main menu if changing this behavior to reflect the same state!
+        ShaderPlane.GetComponent<MeshRenderer>().enabled = false;
 
 
         // Define walls around nodes bounce off of
