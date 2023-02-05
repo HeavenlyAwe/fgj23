@@ -137,6 +137,7 @@ public partial class Main : MonoBehaviour
 
         materialProperty.SetInt("blobCount", blobCount);
         materialProperty.SetFloatArray("blobArray", blobArray);
+        materialProperty.SetFloat("cameraScroll", mainCamera.transform.position.y);
         ShaderPlane.GetComponent<Renderer> ().SetPropertyBlock (materialProperty);
 
     }
@@ -145,7 +146,7 @@ public partial class Main : MonoBehaviour
     {
         //CheckIfHoldOrTap();
 
-        if (ui.GetChild(0).gameObject.activeSelf) return; 
+        if (ui.GetChild(0).gameObject.activeSelf) return;
 
         UpdateDraggablePosition();
 
@@ -164,7 +165,7 @@ public partial class Main : MonoBehaviour
                 if (!isDragging)
                 {
                     // 1 (2) -> -1/2, 1/2
-                    // 2 (3) -> -1  , 0  ,  1 
+                    // 2 (3) -> -1  , 0  ,  1
                     //int divider = Mathf.Clamp(tapCount, 2, 5) + 1;
                     int divider = Mathf.Clamp(tapCount + 1, 2, 5);
                     var startNode = previouslySelectedGo.GetComponent<Blob>().node;
