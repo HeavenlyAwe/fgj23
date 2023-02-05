@@ -53,6 +53,7 @@ public partial class Main : MonoBehaviour
     public Transform wallRight;
     public Transform wallTop;
 
+    public Transform ui;
     public float maxScrollDistance = 40;
 
     private void OnEnable()
