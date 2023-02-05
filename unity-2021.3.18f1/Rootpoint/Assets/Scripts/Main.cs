@@ -194,7 +194,7 @@ public partial class Main : MonoBehaviour
 
     public void PlaySound(string key)
     {
-        effectSource.PlayOneShot(audio[key]);
+        effectSource.PlayOneShot(audioMap[key]);
     }
 
     //IEnumerator ResetRoutine(float duration)

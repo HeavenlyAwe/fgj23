@@ -20,14 +20,14 @@ public partial class Main : MonoBehaviour
         }
     }
 
-    Dictionary<string, AudioClip> audio = new Dictionary<string, AudioClip>();
+    Dictionary<string, AudioClip> audioMap = new Dictionary<string, AudioClip>();
 
     private void LoadAudio()
     {
-        audio.Add("splitSound", Resources.Load<AudioClip>("Sounds/Blob_apart"));
-        audio.Add("mergeSound", Resources.Load<AudioClip>("Sounds/Blob_together"));
-        audio.Add("scoreSound", Resources.Load<AudioClip>("Sounds/Blob_points_1"));
-        audio.Add("background", Resources.Load<AudioClip>("Sounds/jedentaghund"));
+        audioMap.Add("splitSound", Resources.Load<AudioClip>("Sounds/Blob_apart"));
+        audioMap.Add("mergeSound", Resources.Load<AudioClip>("Sounds/Blob_together"));
+        audioMap.Add("scoreSound", Resources.Load<AudioClip>("Sounds/Blob_points_1"));
+        audioMap.Add("background", Resources.Load<AudioClip>("Sounds/jedentaghund"));
     }
 
     void Awake()
