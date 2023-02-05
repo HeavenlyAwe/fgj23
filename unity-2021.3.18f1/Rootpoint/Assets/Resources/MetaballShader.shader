@@ -309,7 +309,7 @@ Shader "Unlit/Metaballs"
 							//ccc = lerp(ccc, float3(0.3, 0.45, 0.25), smoothstep(0.65, 0.66, sin(15.0*h)));
 							// ccc = lerp(ccc, float3(0.3, 0.20, 0.95), smoothstep(0.65, 0.66, sin(15.0*h)));
 
-                            ccc = float3(
+                            ccc = 0.2 * float3(
                                 blobArray[i * 5 + 2],
                                 blobArray[i * 5 + 3],
                                 blobArray[i * 5 + 4]);
