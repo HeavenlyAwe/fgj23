@@ -134,7 +134,6 @@ public partial class Main : MonoBehaviour
 
         var go = Instantiate(nodeGo, spawnPos, Quaternion.identity);
 
-
         if (squareRootMap.ContainsKey(node.value) || node.value == 1)
         {
             if (node.value != 1) 
