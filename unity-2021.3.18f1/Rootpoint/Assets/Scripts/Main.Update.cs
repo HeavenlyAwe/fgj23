@@ -55,7 +55,18 @@ public partial class Main : MonoBehaviour
                 else
                 {
                     // Object position doesn't work with walls. We want to move away from wall and not from the (possibly) far away origin
-                    collideDirection = blob.transform.position - collider.ClosestPoint(blob.transform.position);
+                    if (collider.GetType() == typeof(BoxCollider))
+                    {
+                        collideDirection = blob.transform.position - ((BoxCollider)collider).ClosestPoint(blob.transform.position);
+                    }
+                    else if (collider.GetType() == typeof(SphereCollider))
+                    {
+                        collideDirection = blob.transform.position - ((SphereCollider)collider).ClosestPoint(blob.transform.position);
+                    }
+                    else
+                    {
+                        collideDirection = blob.transform.position - collider.ClosestPoint(blob.transform.position);
+                    }
                 }
                 float magnitude = collideDirection.magnitude;
                 if (magnitude == 0)
@@ -71,12 +82,20 @@ public partial class Main : MonoBehaviour
             velocity *= Friction;// * Time.deltaTime;
 
             blob.transform.Translate(velocity * Time.deltaTime);
+
+            float leftWallX = wallLeft.transform.position.x + wallLeft.GetComponent<BoxCollider>().size.x / 2;
+            float rightWallX = wallRight.transform.position.x - wallRight.GetComponent<BoxCollider>().size.x / 2;
+            float x = Mathf.Clamp(blob.transform.position.x, leftWallX, rightWallX);
+            float y = blob.transform.position.y;
+            float z = blob.transform.position.z;
+            blob.transform.position = new Vector3(x, y, z);
+
             blob.GetComponent<Blob>().velocity = velocity;
             blob.GetComponent<Blob>().magnitude = Mathf.Round(velocity.magnitude * 100);
 
             node.position = blob.transform.position;
             var lineRenderer = blob.GetComponent<LineRenderer>();
-            
+
             var vert1 = node.parents[0].position;
             var vert2 = node.position;
             var vert3 = (node.parents[1] != null) ? node.parents[1].position : node.position;
@@ -117,6 +136,7 @@ public partial class Main : MonoBehaviour
                         }
                     });
                     previouslySelectedGo.layer = LayerMask.NameToLayer("Ignore Raycast");
+                    selectedGo = null;
                 }
 
                 tapCount = 0;
@@ -135,7 +155,7 @@ public partial class Main : MonoBehaviour
 
         if (squareRootMap.ContainsKey(node.value) || node.value == 1)
         {
-            if (node.value != 1) 
+            if (node.value != 1)
             {
                 PlayScoreSound();
                 score += squareRootMap[node.value] - 1;
