@@ -88,7 +88,7 @@ public partial class Main : MonoBehaviour
         var root = new Node(startVal);
         graph = new Graph(root);
         // Init root node game object
-        var go = Instantiate(Resources.Load<GameObject>("Metaball"), new Vector3(0.0f, 6.5f, 0.0f), Quaternion.identity);
+        var go = Instantiate(Resources.Load<GameObject>("Metaball"), new Vector3(0.0f, 5.0f, 0.0f), Quaternion.identity);
         go.transform.GetChild(0).GetComponent<TextMesh>().text = root.value.ToString();
         scoreUI.text = "Score <br> 0";
         go.GetComponent<Blob>().node = root;
