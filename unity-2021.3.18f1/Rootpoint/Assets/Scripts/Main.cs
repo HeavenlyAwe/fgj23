@@ -4,6 +4,7 @@ using UnityEngine.UI;
 
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.EnhancedTouch;
+using System.Collections;
 
 public partial class Main : MonoBehaviour
 {
@@ -58,10 +59,8 @@ public partial class Main : MonoBehaviour
     public Transform ui;
     public float maxScrollDistance = 40;
 
-    private AudioSource splitSound;
-    private AudioSource mergeSound;
-    private AudioSource scoreSound;
-    private AudioSource backgroundMusic;
+    public AudioSource effectSource;
+    public AudioSource backgroundMusic;
 
     private void OnEnable()
     {
@@ -147,6 +146,8 @@ public partial class Main : MonoBehaviour
             isScrolling = true;
             scrollStart = hit.point;
         }
+
+        PlaySound("mergeSound");
     }
 
     Vector3 scrollStart = Vector3.zero;
@@ -184,15 +185,36 @@ public partial class Main : MonoBehaviour
         PlaySound("mergeSound");
     }
 
-
-    public void PlayScoreSound()
-    {
-        PlaySound("scoreSound");
-    }
-
     public void PlaySound(string key)
     {
-        GetComponent<AudioSource>().PlayOneShot(audio[key]);
+        effectSource.PlayOneShot(audio[key]);
+    }
+
+    IEnumerator ResetRoutine(float duration)
+    {
+        yield return new WaitForSeconds(duration);
+        ResetGame();
+    }
+
+    IEnumerator StartFade(AudioSource audioSource, float duration, float targetVolume)
+    {
+        float currentTime = 0;
+        float start = audioSource.volume;
+        while (currentTime < duration)
+        {
+            currentTime += Time.deltaTime;
+            audioSource.volume = Mathf.Lerp(start, targetVolume, currentTime / duration);
+            yield return null;
+        }
+        yield break;
+    }
+
+    public void GameBackButton()
+    {
+        PlaySound("scoreSound");
+        float duration = audio["scoreSound"].length - 2.0f;
+        StartCoroutine(StartFade(backgroundMusic, duration, 0.0f));
+        StartCoroutine(ResetRoutine(duration));
     }
 
 
