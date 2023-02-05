@@ -58,6 +58,11 @@ public partial class Main : MonoBehaviour
     public Transform ui;
     public float maxScrollDistance = 40;
 
+    private AudioSource splitSound;
+    private AudioSource mergeSound;
+    private AudioSource scoreSound;
+    private AudioSource backgroundMusic;
+
     private void OnEnable()
     {
         //TouchSimulation.Enable();
@@ -97,7 +102,8 @@ public partial class Main : MonoBehaviour
             Vector3 scrollDelta = new Vector3(0, scrollStart.y - scrollTarget.y, 0);
             mainCamera.transform.Translate(scrollDelta);
             mainCamera.transform.position = new Vector3(0, Mathf.Clamp(mainCamera.transform.position.y, -maxScrollDistance, 1), -10);
-        } else
+        }
+        else
         {
             var oldIsDragging = isDragging;
             isDragging = ((Vector2.Distance(touchPosition, originalTouchPosition) > 20.0f && selectedGo != null) || isDragging);
@@ -175,12 +181,18 @@ public partial class Main : MonoBehaviour
         var newNode = node1 + node2;
         var spawnPos = new Vector3((node1.position.x + node2.position.x) / 2, (node1.position.y + node2.position.y) / 2 - 1.0f, 0.0f);
         SpawnNode(newNode, spawnPos);
+        PlaySound("mergeSound");
     }
 
 
     public void PlayScoreSound()
     {
-        GetComponent<AudioSource>().Play();
+        PlaySound("scoreSound");
+    }
+
+    public void PlaySound(string key)
+    {
+        GetComponent<AudioSource>().PlayOneShot(audio[key]);
     }
 
 

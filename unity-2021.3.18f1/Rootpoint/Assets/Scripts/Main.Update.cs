@@ -148,6 +148,8 @@ public partial class Main : MonoBehaviour
                     });
                     previouslySelectedGo.layer = LayerMask.NameToLayer("Ignore Raycast");
                     selectedGo = null;
+
+                    PlaySound("splitSound");
                 }
 
                 tapCount = 0;

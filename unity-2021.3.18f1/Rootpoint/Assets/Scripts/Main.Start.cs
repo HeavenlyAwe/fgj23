@@ -17,9 +17,20 @@ public partial class Main : MonoBehaviour
         }
     }
 
+    Dictionary<string, AudioClip> audio = new Dictionary<string, AudioClip>();
+
+    private void LoadAudio()
+    {
+        audio.Add("splitSound", Resources.Load<AudioClip>("Sounds/Blob_apart"));
+        audio.Add("mergeSound", Resources.Load<AudioClip>("Sounds/Blob_together"));
+        audio.Add("scoreSound", Resources.Load<AudioClip>("Sounds/Blob_points_1"));
+        audio.Add("background", Resources.Load<AudioClip>("Sounds/jedentaghund"));
+    }
+
     void Awake()
     {
         PrecalculateSquares();
+        LoadAudio();
         //EnhancedTouchSupport.Enable();
 
         playerGo = Instantiate(Resources.Load<GameObject>("Player"));
