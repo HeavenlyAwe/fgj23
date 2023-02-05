@@ -125,14 +125,24 @@ public partial class Main : MonoBehaviour
 
                 if (!isDragging)
                 {
-                    int i = 0;
+                    // 1 (2) -> -1/2, 1/2
+                    // 2 (3) -> -1  , 0  ,  1 
+                    //int divider = Mathf.Clamp(tapCount, 2, 5) + 1;
+                    int divider = Mathf.Clamp(tapCount + 1, 2, 5);
                     var startNode = previouslySelectedGo.GetComponent<Blob>().node;
-                    graph.SuperDivide(startNode, Mathf.Clamp(tapCount + 1, 2, 5));
+                    if (divider > startNode.value)
+                    {
+                        divider = startNode.value;
+                    }
+                    float startX = -((divider - 1) / 2.0f);
+                    graph.SuperDivide(startNode, divider);
                     graph.TraverseGraph(startNode, (node) =>
                     {
                         if (!startNode.Equals(node))
                         {
-                            var spawnPos = previouslySelectedGo.transform.position + new Vector3(i++, -1, 0);
+                            var spawnPos = previouslySelectedGo.transform.position + new Vector3(startX, -1, 0);
+                            startX += 1;
+                            Debug.Log(spawnPos);
                             SpawnNode(node, spawnPos);
                         }
                     });
