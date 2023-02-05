@@ -62,4 +62,9 @@ public partial class Main : MonoBehaviour
         Scene scene = SceneManager.GetActiveScene();
         SceneManager.LoadScene(scene.name);
     }
+
+    public void QuitGame()
+    {
+        Application.Quit();
+    }
 }
