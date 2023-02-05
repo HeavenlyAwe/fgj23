@@ -23,8 +23,6 @@ public partial class Main : MonoBehaviour
     InputAction touchPressAction;
     InputAction touchPositionAction;
 
-    InputAction mousePressAction;
-
     [Header("Informative Values")]
     public bool isPressed;
     public bool isDragging;
@@ -77,10 +75,6 @@ public partial class Main : MonoBehaviour
 
         touchPressAction.started += TouchPressedStarted;
         touchPressAction.canceled += TouchPressedCanceled;
-
-
-        mousePressAction.started += TouchPressedStarted;
-        mousePressAction.canceled += TouchPressedCanceled;
     }
 
     private void OnDisable()
@@ -91,11 +85,6 @@ public partial class Main : MonoBehaviour
 
         touchPressAction.started -= TouchPressedStarted;
         touchPressAction.canceled -= TouchPressedCanceled;
-
-
-
-        mousePressAction.started -= TouchPressedStarted;
-        mousePressAction.canceled -= TouchPressedCanceled;
     }
 
     private void TouchPositionPerformed(InputAction.CallbackContext context)
@@ -122,8 +111,19 @@ public partial class Main : MonoBehaviour
     {
         if (isPressed) return;
 
-        var x = Touchscreen.current.position.x.ReadValue();
-        var y = Touchscreen.current.position.y.ReadValue();
+        float x = 0.0f;
+        float y = 0.0f;
+
+        if (Touchscreen.current == null)
+        {
+            x = Mouse.current.position.x.ReadValue();
+            y = Mouse.current.position.y.ReadValue();
+
+        } else
+        {
+            x = Touchscreen.current.position.x.ReadValue();
+            y = Touchscreen.current.position.y.ReadValue();
+        }
 
         touchPosition = new Vector2(x, y);
         originalTouchPosition = touchPosition;
