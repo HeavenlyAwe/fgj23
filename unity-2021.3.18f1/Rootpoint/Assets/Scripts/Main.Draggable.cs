@@ -21,6 +21,7 @@ public partial class Main : MonoBehaviour
         ghostBallGo = Instantiate(Resources.Load<GameObject>("GhostBall"), selectedGo.transform.position, Quaternion.identity);
 
         tapCount = 0;
+        VisualizeTapCount(tapCount);
         previouslySelectedGo = null;
     }
 

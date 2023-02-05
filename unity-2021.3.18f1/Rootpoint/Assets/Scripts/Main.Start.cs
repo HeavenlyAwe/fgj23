@@ -3,6 +3,7 @@ using UnityEngine;
 
 using UnityEngine.InputSystem;
 using GraphTools;
+using UnityEngine.SceneManagement;
 
 public partial class Main : MonoBehaviour
 {
@@ -47,10 +48,18 @@ public partial class Main : MonoBehaviour
         wallTop.transform.position = new Vector3(0.0f, topPos.y, 0.0f);
 
         // Init root node game object
-        var go = Instantiate(Resources.Load<GameObject>("Metaball"), new Vector3(0.0f, 8.0f, 0.0f), Quaternion.identity);
+        var go = Instantiate(Resources.Load<GameObject>("Metaball"), new Vector3(0.0f, 6.5f, 0.0f), Quaternion.identity);
         go.transform.GetChild(0).GetComponent<TextMesh>().text = graph.root.value.ToString();
         go.GetComponent<Blob>().node = graph.root;
         graph.root.gameObject = go;
         graph.root.position = go.transform.position;
+
+        VisualizeTapCount(0);
+    }
+
+    public void ResetGame()
+    {
+        Scene scene = SceneManager.GetActiveScene();
+        SceneManager.LoadScene(scene.name);
     }
 }

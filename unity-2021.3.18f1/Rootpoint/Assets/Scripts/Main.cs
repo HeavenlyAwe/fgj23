@@ -1,5 +1,6 @@
 using GraphTools;
 using UnityEngine;
+using UnityEngine.UI;
 
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.EnhancedTouch;
@@ -48,6 +49,7 @@ public partial class Main : MonoBehaviour
     bool tapTimerDone = false;
     float tapTimer;
     public int tapCount = 0;
+    public Image[] tiles;
 
     public Transform wallLeft;
     public Transform wallRight;
@@ -124,6 +126,9 @@ public partial class Main : MonoBehaviour
             selectedGo = hit.transform.gameObject;
 
             tapCount = (previouslySelectedGo == selectedGo) ? tapCount + 1 : 1;
+            tapCount = tapCount == 5 ? 1 : tapCount;
+            VisualizeTapCount(tapCount);
+
             previouslySelectedGo = selectedGo;
 
             selectedGo.GetComponent<Blob>().node.selected = true;
@@ -176,5 +181,21 @@ public partial class Main : MonoBehaviour
     public void PlayScoreSound()
     {
         GetComponent<AudioSource>().Play();
+    }
+
+
+    public void VisualizeTapCount(int n)
+    {
+        for (int i = 0; i < tiles.Length; i++)
+        {
+            if (i <= n)
+            {
+                tiles[i].color = Color.red;
+            }
+            else
+            {
+                tiles[i].color = Color.white;
+            }
+        }
     }
 }

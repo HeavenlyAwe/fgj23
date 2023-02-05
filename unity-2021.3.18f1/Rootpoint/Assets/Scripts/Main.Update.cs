@@ -151,6 +151,7 @@ public partial class Main : MonoBehaviour
                 }
 
                 tapCount = 0;
+                VisualizeTapCount(tapCount);
                 tapTimerDone = true;
             }
         }
