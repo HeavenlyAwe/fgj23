@@ -231,7 +231,7 @@ Shader "Unlit/Metaballs"
 					float an = 0.5*time - 6.2831*(m.x - 0.5);
                     an = 0;
 					float3 ro = float3(5.0*sin(an), 2.5*cos(0.4*an), -8.0*cos(an));
-                    ro = float3(7, 7, 7);
+                    ro = float3(0, 1, -10);
 					float3 ta = float3(0.0, 0.0, 0.0);
 
 					//-----------------------------------------------------
@@ -240,12 +240,15 @@ Shader "Unlit/Metaballs"
 					// image plane
 					//float2 p = -1.0 + 2.0 * (fragCoord.xy + poff) / iResolution.xy;
 					float2 p = -1.0 + 2.0 * (q*_ScreenParams.xy + poff) / _ScreenParams.xy;
-					p.x *= _ScreenParams.x / _ScreenParams.y;
+					// p.x *= _ScreenParams.x / _ScreenParams.y;
 					p.x *= -1;
 					// camera matrix
 					float3 ww = normalize(ta - ro);
 					float3 uu = normalize(cross(ww, float3(0.0, 1.0, 0.0)));
 					float3 vv = normalize(cross(uu, ww));
+                    vv = float3(1, 0, 0);
+                    uu = float3(0, 1, 0);
+                    ww = float3(0, 0, 1);
 					// create view ray
 					float3 rd = normalize(p.x*uu + p.y*vv + 2.0*ww);
 					// dof
