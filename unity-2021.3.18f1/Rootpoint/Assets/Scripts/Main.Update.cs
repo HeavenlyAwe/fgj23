@@ -8,6 +8,7 @@ using UnityEngine.InputSystem.EnhancedTouch;
 using static UnityEditor.FilePathAttribute;
 using System.Xml.Serialization;
 using TMPro;
+using UnityEngine.UIElements;
 
 public partial class Main : MonoBehaviour
 {
@@ -104,18 +105,19 @@ public partial class Main : MonoBehaviour
             blobArray[blobCount * 5] = blob.transform.position.x;
             blobArray[blobCount * 5 + 1] = blob.transform.position.y;
 
-            // Turnwise R, G & B just for testing
-            if (blobCount % 3 == 0)
+            if (node.value == 1)
             {
                 blobArray[blobCount * 5 + 2] = 1.0f;
                 blobArray[blobCount * 5 + 3] = 0.0f;
                 blobArray[blobCount * 5 + 4] = 0.0f;
-            } else if (blobCount % 3 == 1)
+            }
+            else if (squareRootMap.ContainsKey(node.value))
             {
                 blobArray[blobCount * 5 + 2] = 0.0f;
                 blobArray[blobCount * 5 + 3] = 1.0f;
                 blobArray[blobCount * 5 + 4] = 0.0f;
-            } else
+            }
+            else
             {
                 blobArray[blobCount * 5 + 2] = 0.0f;
                 blobArray[blobCount * 5 + 3] = 0.0f;
