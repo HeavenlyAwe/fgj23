@@ -39,71 +39,90 @@ public partial class Main : MonoBehaviour
 
         graph.TraverseGraph((node) =>
         {
-            if (node.gameObject == null || node.Equals(graph.root)) return;
+            if (node.gameObject == null) return;
 
             GameObject blob = node.gameObject;
-            SphereCollider thisCollider = blob.GetComponent<SphereCollider>();
-            Collider[] hitColliders = Physics.OverlapSphere(
-                thisCollider.transform.position,
-                thisCollider.radius);
-            Vector3 newDirection = new Vector3(0, 0, 0);
-            foreach (Collider collider in hitColliders)
+            if (!node.Equals(graph.root))
             {
-                Blob blobComponent = collider.gameObject.GetComponent<Blob>();
-                Vector3 collideDirection;
-                if (blobComponent != null)
+                SphereCollider thisCollider = blob.GetComponent<SphereCollider>();
+                Collider[] hitColliders = Physics.OverlapSphere(
+                    thisCollider.transform.position,
+                    thisCollider.radius);
+                Vector3 newDirection = new Vector3(0, 0, 0);
+                foreach (Collider collider in hitColliders)
                 {
-                    // If node is currently selected and dragged by player, don't contribute to collisions
-                    if (blobComponent.node.selected)
+                    Blob blobComponent = collider.gameObject.GetComponent<Blob>();
+                    Vector3 collideDirection;
+                    if (blobComponent != null)
                     {
-                        continue;
-                    }
-                    // Closest point doesn't work if spheres already intersect too much, then they just merge
-                    collideDirection = blob.transform.position - collider.gameObject.transform.position;
-                }
-                else
-                {
-                    // Object position doesn't work with walls. We want to move away from wall and not from the (possibly) far away origin
-                    if (collider.GetType() == typeof(BoxCollider))
-                    {
-                        collideDirection = blob.transform.position - ((BoxCollider)collider).ClosestPoint(blob.transform.position);
-                    }
-                    else if (collider.GetType() == typeof(SphereCollider))
-                    {
-                        collideDirection = blob.transform.position - ((SphereCollider)collider).ClosestPoint(blob.transform.position);
+                        // If node is currently selected and dragged by player, don't contribute to collisions
+                        if (blobComponent.node.selected)
+                        {
+                            continue;
+                        }
+                        // Closest point doesn't work if spheres already intersect too much, then they just merge
+                        collideDirection = blob.transform.position - collider.gameObject.transform.position;
                     }
                     else
                     {
-                        collideDirection = blob.transform.position - collider.ClosestPoint(blob.transform.position);
+                        // Object position doesn't work with walls. We want to move away from wall and not from the (possibly) far away origin
+                        if (collider.GetType() == typeof(BoxCollider))
+                        {
+                            collideDirection = blob.transform.position - ((BoxCollider)collider).ClosestPoint(blob.transform.position);
+                        }
+                        else if (collider.GetType() == typeof(SphereCollider))
+                        {
+                            collideDirection = blob.transform.position - ((SphereCollider)collider).ClosestPoint(blob.transform.position);
+                        }
+                        else
+                        {
+                            collideDirection = blob.transform.position - collider.ClosestPoint(blob.transform.position);
+                        }
                     }
+                    float magnitude = collideDirection.magnitude;
+                    if (magnitude == 0)
+                    {
+                        magnitude = 0.001f;
+                    }
+                    float inverse = 1 / magnitude;
+                    newDirection += Vector3.Scale(collideDirection, new Vector3(inverse, inverse, inverse));
                 }
-                float magnitude = collideDirection.magnitude;
-                if (magnitude == 0)
-                {
-                    magnitude = 0.001f;
-                }
-                float inverse = 1 / magnitude;
-                newDirection += Vector3.Scale(collideDirection, new Vector3(inverse, inverse, inverse));
+                newDirection = Vector3.ClampMagnitude(newDirection, Clamping);
+                Vector3 velocity = blob.GetComponent<Blob>().velocity;
+                velocity += newDirection;
+                velocity *= Friction;// * Time.deltaTime;
+
+                blob.transform.Translate(velocity * Time.deltaTime);
+
+                float leftWallX = wallLeft.transform.position.x + wallLeft.GetComponent<BoxCollider>().size.x / 2;
+                float rightWallX = wallRight.transform.position.x - wallRight.GetComponent<BoxCollider>().size.x / 2;
+                float x = Mathf.Clamp(blob.transform.position.x, leftWallX, rightWallX);
+                float y = blob.transform.position.y;
+                float z = blob.transform.position.z;
+                blob.transform.position = new Vector3(x, y, z);
+
+                blob.GetComponent<Blob>().velocity = velocity;
+                blob.GetComponent<Blob>().magnitude = Mathf.Round(velocity.magnitude * 100);
+                blobArray[blobCount * 5] = blob.transform.position.x;
+                blobArray[blobCount * 5 + 1] = blob.transform.position.y;
+
+
+                var lineRenderer = blob.GetComponent<LineRenderer>();
+                node.position = blob.transform.position;
+
+                var vert1 = node.parents[0].position;
+                var vert2 = node.position;
+                var vert3 = (node.parents[1] != null) ? node.parents[1].position : node.position;
+
+                lineRenderer.SetPositions(new[] { vert1, vert2, vert3 });
             }
-            newDirection = Vector3.ClampMagnitude(newDirection, Clamping);
-            Vector3 velocity = blob.GetComponent<Blob>().velocity;
-            velocity += newDirection;
-            velocity *= Friction;// * Time.deltaTime;
+            else
+            {
+                node.position = graph.root.gameObject.transform.position;
+                blobArray[blobCount * 5] = blob.transform.position.x;
+                blobArray[blobCount * 5 + 1] = blob.transform.position.y;
+            }
 
-            blob.transform.Translate(velocity * Time.deltaTime);
-
-            float leftWallX = wallLeft.transform.position.x + wallLeft.GetComponent<BoxCollider>().size.x / 2;
-            float rightWallX = wallRight.transform.position.x - wallRight.GetComponent<BoxCollider>().size.x / 2;
-            float x = Mathf.Clamp(blob.transform.position.x, leftWallX, rightWallX);
-            float y = blob.transform.position.y;
-            float z = blob.transform.position.z;
-            blob.transform.position = new Vector3(x, y, z);
-
-            blob.GetComponent<Blob>().velocity = velocity;
-            blob.GetComponent<Blob>().magnitude = Mathf.Round(velocity.magnitude * 100);
-
-            blobArray[blobCount * 5] = blob.transform.position.x;
-            blobArray[blobCount * 5 + 1] = blob.transform.position.y;
 
             if (node.value == 1)
             {
@@ -124,15 +143,6 @@ public partial class Main : MonoBehaviour
                 blobArray[blobCount * 5 + 4] = 1.0f;
             }
             blobCount++;
-
-            node.position = blob.transform.position;
-            var lineRenderer = blob.GetComponent<LineRenderer>();
-
-            var vert1 = node.parents[0].position;
-            var vert2 = node.position;
-            var vert3 = (node.parents[1] != null) ? node.parents[1].position : node.position;
-
-            lineRenderer.SetPositions(new[] { vert1, vert2, vert3 });
         });
 
         // blobArray[0] = 1.0f;
