@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using GraphTools;
 using UnityEngine.SceneManagement;
+using System.Collections;
+using System;
 
 public partial class Main : MonoBehaviour
 {
@@ -46,8 +48,10 @@ public partial class Main : MonoBehaviour
 
     void Start()
     {
-        // Init node graph
-        graph = new Graph(new Node(10));
+        ui.Find("MainMenu").Find("RestartButton").GetComponent<UnityEngine.UI.Button>().onClick.AddListener(() =>
+        {
+            ResetGame();
+        });
 
         // Define walls around nodes bounce off of
         var leftPos = mainCamera.ScreenToWorldPoint(Vector3.zero);
@@ -58,20 +62,49 @@ public partial class Main : MonoBehaviour
         wallRight.transform.position = new Vector3(rightPos.x, 0.0f, 0.0f);
         wallTop.transform.position = new Vector3(0.0f, topPos.y, 0.0f);
 
-        // Init root node game object
-        var go = Instantiate(Resources.Load<GameObject>("Metaball"), new Vector3(0.0f, 6.5f, 0.0f), Quaternion.identity);
-        go.transform.GetChild(0).GetComponent<TextMesh>().text = graph.root.value.ToString();
-        go.GetComponent<Blob>().node = graph.root;
-        graph.root.gameObject = go;
-        graph.root.position = go.transform.position;
+        InitGraph();
 
         VisualizeTapCount(0);
     }
 
+    void InitGraph(int startVal = 10)
+    {
+        Node.nodeCount = 0;
+        // Init node graph
+        var root = new Node(startVal);
+        graph = new Graph(root);
+        // Init root node game object
+        var go = Instantiate(Resources.Load<GameObject>("Metaball"), new Vector3(0.0f, 6.5f, 0.0f), Quaternion.identity);
+        go.transform.GetChild(0).GetComponent<TextMesh>().text = root.value.ToString();
+        go.GetComponent<Blob>().node = root;
+        root.gameObject = go;
+        root.position = go.transform.position;
+    }
+
     public void ResetGame()
     {
-        Scene scene = SceneManager.GetActiveScene();
-        SceneManager.LoadScene(scene.name);
+        resetting = true;
+        var blobs = FindObjectsOfType<Blob>();
+        foreach (var blob in blobs)
+        {
+            Destroy(blob.gameObject);
+        }
+
+        StartCoroutine(WaitUntilGraphDestroyed(() =>
+        {
+            InitGraph();
+            resetting = false;
+        }));
+    }
+
+    IEnumerator WaitUntilGraphDestroyed(Action callback)
+    {
+        while (FindObjectsOfType<Blob>().Length > 0)
+        {
+            yield return null;
+        }
+
+        callback?.Invoke();
     }
 
     public void QuitGame()

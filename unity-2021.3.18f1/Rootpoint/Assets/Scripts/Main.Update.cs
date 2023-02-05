@@ -29,6 +29,7 @@ public partial class Main : MonoBehaviour
 
     void UpdateBlobMovement()
     {
+        if (resetting) return;
         graph.TraverseGraph((node) =>
         {
             if (node.gameObject == null || node.Equals(graph.root)) return;
@@ -108,6 +109,8 @@ public partial class Main : MonoBehaviour
     void Update()
     {
         //CheckIfHoldOrTap();
+
+        if (ui.GetChild(0).gameObject.activeSelf) return; 
 
         UpdateDraggablePosition();
 
