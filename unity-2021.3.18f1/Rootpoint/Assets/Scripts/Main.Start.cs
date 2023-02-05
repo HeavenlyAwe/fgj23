@@ -47,6 +47,8 @@ public partial class Main : MonoBehaviour
         mousePressAction = playerInput.actions["MousePress"];
     }
 
+    bool useMetaballs = false;
+
     void Start()
     {
         scoreUI = ui.Find("GameOverlay").Find("ScoreOverlay").Find("ScoreText").GetComponent<TextMeshProUGUI>();
@@ -55,6 +57,17 @@ public partial class Main : MonoBehaviour
         {
             ResetGame();
         });
+
+        ui.Find("MainMenu").Find("MainMenuButtons").Find("QuitButton").GetComponent<UnityEngine.UI.Button>().onClick.AddListener(() =>
+        {
+            QuitGame();
+        });
+
+        ui.Find("MainMenu").Find("MainMenuButtons").Find("EnableMetaballs").GetComponent<UnityEngine.UI.Toggle>().onValueChanged.AddListener((value) =>
+        {
+            useMetaballs = value;
+        });
+
 
         // Define walls around nodes bounce off of
         var leftPos = mainCamera.ScreenToWorldPoint(Vector3.zero);

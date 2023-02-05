@@ -135,17 +135,24 @@ public partial class Main : MonoBehaviour
                 blobArray[blobCount * 5 + 2] = color.x;
                 blobArray[blobCount * 5 + 3] = color.y;
                 blobArray[blobCount * 5 + 4] = color.z;
+
+                if (!useMetaballs)
+                {
+                    blob.GetComponent<MeshRenderer>().material.color = new Color(color.x, color.y, color.z);
+                }
             }
             blobCount++;
         });
 
         // blobArray[0] = 1.0f;
 
-        materialProperty.SetInt("blobCount", blobCount);
-        materialProperty.SetFloatArray("blobArray", blobArray);
-        materialProperty.SetFloat("cameraScroll", mainCamera.transform.position.y);
-        ShaderPlane.GetComponent<Renderer> ().SetPropertyBlock (materialProperty);
-
+        if (useMetaballs)
+        {
+            materialProperty.SetInt("blobCount", blobCount);
+            materialProperty.SetFloatArray("blobArray", blobArray);
+            materialProperty.SetFloat("cameraScroll", mainCamera.transform.position.y);
+            ShaderPlane.GetComponent<Renderer>().SetPropertyBlock(materialProperty);
+        }
     }
 
     void Update()
