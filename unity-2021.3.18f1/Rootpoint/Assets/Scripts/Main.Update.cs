@@ -137,9 +137,13 @@ public partial class Main : MonoBehaviour
             }
             else
             {
-                blobArray[blobCount * 5 + 2] = 0.0f;
-                blobArray[blobCount * 5 + 3] = 0.0f;
-                blobArray[blobCount * 5 + 4] = 1.0f;
+                // blobArray[blobCount * 5 + 2] = 0.0f;
+                // blobArray[blobCount * 5 + 3] = 0.0f;
+                // blobArray[blobCount * 5 + 4] = 1.0f;
+                Vector3 color = blob.GetComponent<Blob>().getColor();
+                blobArray[blobCount * 5 + 2] = color.x;
+                blobArray[blobCount * 5 + 3] = color.y;
+                blobArray[blobCount * 5 + 4] = color.z;
             }
             blobCount++;
         });
