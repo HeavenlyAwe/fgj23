@@ -7,9 +7,13 @@ Shader "Unlit/Metaballs"
     }
     SubShader
     {
-        Tags { "RenderType"="Transparent" }
-        // Tags { "RenderType"="Transparent" "Queue"="Transparent" }
+        // Tags { "RenderType"="Transparent" }
+        Tags { "RenderType"="Transparent" "Queue"="Transparent" }
         LOD 100
+
+        Blend SrcAlpha OneMinusSrcAlpha
+        // Blend SrcAlpha DstAlpha
+        // ZWrite off
 
         Pass
         {
@@ -177,6 +181,9 @@ Shader "Unlit/Metaballs"
 
             fixed4 frag (v2f i) : SV_Target
             {
+
+                float alpha = 0;
+
 				//-----------------------------------------------------
 				// input
 				//-----------------------------------------------------
@@ -273,6 +280,8 @@ Shader "Unlit/Metaballs"
 					float2 tmat = intersect(ro, rd);
 					if (tmat.y > -0.5)
 					{
+                        alpha = 1;
+
 						// geometry
 						float3 pos = ro + tmat.x*rd;
 						float3 nor = calcNormal(pos);
@@ -315,6 +324,7 @@ Shader "Unlit/Metaballs"
 
 						// surface-light interacion
 						col = lin * mate;
+						// col = mate;
 					}
 					tot += col;
 				}
@@ -330,7 +340,8 @@ Shader "Unlit/Metaballs"
 				tot *= 0.5 + 0.5*pow(16.0*q.x*q.y*(1.0 - q.x)*(1.0 - q.y), 0.15);
                 // tot *= blobArray[0];
 				//fragColor =
-				return float4(tot, 0.5);
+				return float4(tot, alpha);
+				// return float4(1, 0, 0, 0.5);
             }
             ENDCG
         }
