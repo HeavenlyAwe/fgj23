@@ -34,7 +34,6 @@ public partial class Main : MonoBehaviour
 
         var materialProperty = new MaterialPropertyBlock();
         // float[] floatArray= new float[] {0.1f, 1f};
-        float[] blobArray= new float[1000];
         int blobCount = 0;
 
         graph.TraverseGraph((node) =>

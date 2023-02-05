@@ -44,6 +44,7 @@ public partial class Main : MonoBehaviour
     public float Friction = 0.8f;
 
     public GameObject ShaderPlane;
+    public float[] blobArray= new float[1000];
 
     Graph graph;
     GameObject nodeGo;
