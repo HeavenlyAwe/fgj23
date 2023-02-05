@@ -1,3 +1,7 @@
+// MIT Licensed shader adapted from:
+// https://github.com/yumayanagisawa/Unity-Metaballs
+// by Yuma Yanagisawa
+
 Shader "Unlit/Metaballs"
 {
     Properties
