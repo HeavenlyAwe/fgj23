@@ -51,7 +51,7 @@ public partial class Main : MonoBehaviour
     {
         scoreUI = ui.Find("GameOverlay").Find("ScoreOverlay").Find("ScoreText").GetComponent<TextMeshProUGUI>();
 
-        ui.Find("MainMenu").Find("RestartButton").GetComponent<UnityEngine.UI.Button>().onClick.AddListener(() =>
+        ui.Find("MainMenu").Find("MainMenuButtons").Find("RestartButton").GetComponent<UnityEngine.UI.Button>().onClick.AddListener(() =>
         {
             ResetGame();
         });
