@@ -211,7 +211,7 @@ public partial class Main : MonoBehaviour
             {
                 PlaySound("scoreSound");
                 score += squareRootMap[node.value];
-                ui.GetChild(1).GetChild(0).GetChild(0).GetComponent<TextMeshProUGUI>().text = "Score <br>" + score.ToString();
+                scoreUI.text = "Score <br>" + score.ToString();
                 go.GetComponent<MeshRenderer>().material = Resources.Load<Material>("Materials/Success");
             }
             else

@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.EnhancedTouch;
 using System.Collections;
+using TMPro;
 
 public partial class Main : MonoBehaviour
 {
@@ -65,6 +66,7 @@ public partial class Main : MonoBehaviour
     public AudioSource backgroundMusic;
 
     bool resetting = false;
+    TextMeshProUGUI scoreUI;
 
     private void OnEnable()
     {

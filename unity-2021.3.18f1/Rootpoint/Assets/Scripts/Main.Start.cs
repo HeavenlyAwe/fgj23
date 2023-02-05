@@ -6,6 +6,7 @@ using GraphTools;
 using UnityEngine.SceneManagement;
 using System.Collections;
 using System;
+using TMPro;
 
 public partial class Main : MonoBehaviour
 {
@@ -48,6 +49,8 @@ public partial class Main : MonoBehaviour
 
     void Start()
     {
+        scoreUI = ui.Find("GameOverlay").Find("ScoreOverlay").Find("ScoreText").GetComponent<TextMeshProUGUI>();
+
         ui.Find("MainMenu").Find("RestartButton").GetComponent<UnityEngine.UI.Button>().onClick.AddListener(() =>
         {
             ResetGame();
@@ -76,6 +79,7 @@ public partial class Main : MonoBehaviour
         // Init root node game object
         var go = Instantiate(Resources.Load<GameObject>("Metaball"), new Vector3(0.0f, 6.5f, 0.0f), Quaternion.identity);
         go.transform.GetChild(0).GetComponent<TextMesh>().text = root.value.ToString();
+        scoreUI.text = "Score <br> 0";
         go.GetComponent<Blob>().node = root;
         root.gameObject = go;
         root.position = go.transform.position;
