@@ -52,6 +52,8 @@ public partial class Main : MonoBehaviour
     public Transform wallRight;
     public Transform wallTop;
 
+    public Transform ui;
+
     private void OnEnable()
     {
         //TouchSimulation.Enable();

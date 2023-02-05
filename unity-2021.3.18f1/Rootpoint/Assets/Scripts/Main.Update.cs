@@ -7,6 +7,7 @@ using UnityEngine.InputSystem.Controls;
 using UnityEngine.InputSystem.EnhancedTouch;
 using static UnityEditor.FilePathAttribute;
 using System.Xml.Serialization;
+using TMPro;
 
 public partial class Main : MonoBehaviour
 {
@@ -140,6 +141,7 @@ public partial class Main : MonoBehaviour
             {
                 PlayScoreSound();
                 score += squareRootMap[node.value] - 1;
+                ui.GetChild(1).GetChild(0).GetComponent<TextMeshProUGUI>().text = "Score <br>" + score.ToString();
                 go.GetComponent<MeshRenderer>().material = Resources.Load<Material>("Materials/Success");
             }
             else
